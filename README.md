@@ -9,6 +9,8 @@ Unified workspace for KAFI Group AI agents — one localhost, dropdown to switch
 | International Sales Chatbot | `/` or `/index.html` |
 | Supply Chain (Agent 6) | `/supply-chain.html` |
 | Sourcing & Procurement | `/sourcing.html` |
+| Warehouse & QC (Agent 8) | `/warehouse-qc.html` |
+| Security Monitoring (Agent 10) | `/security.html` |
 | Admin / Training | `/admin.html` |
 
 Use the **dropdown at the top** of any page to switch agents.

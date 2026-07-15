@@ -298,12 +298,20 @@
 
         <!-- CRM Lead Manager -->
         <div class="admin-card">
-          <div class="admin-card-header">
+          <div class="admin-card-header" style="flex-wrap: wrap; gap: 8px;">
             <span class="admin-card-title">B2B CRM Leads Directory</span>
-            <button class="admin-btn admin-btn--primary admin-btn--sm" id="addNewLeadBtn" type="button">
-              <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
-              Add Lead Manually
-            </button>
+            <div style="margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="admin-btn admin-btn--gold admin-btn--sm" id="syncSourcingBtn" type="button" title="Import buyer leads from Sourcing Agent">
+                ↗ Import from Sourcing
+              </button>
+              <button class="admin-btn admin-btn--primary admin-btn--sm" id="addNewLeadBtn" type="button">
+                <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+                Add Lead Manually
+              </button>
+            </div>
+          </div>
+          <div class="admin-card-body" style="padding: 12px 16px 0; border-bottom: 1px solid #222;">
+            <p id="sourcingSyncHint" class="settings-section-desc" style="margin: 0 0 12px;">Sourcing buyers sync into this CRM with HOT / WARM / COLD scores for quotes and outreach.</p>
           </div>
           <div class="admin-card-body" style="padding: 0;">
             <div class="admin-table-container" style="overflow-x: auto;">
@@ -554,6 +562,11 @@
       const apiMod = await import('./engine/api-connector.js');
       APIConnector = apiMod.APIConnector || apiMod.default;
     } catch (e) { console.warn('[KAFI Admin] API connector not loaded:', e.message); }
+
+    let LeadBridge;
+    try {
+      LeadBridge = await import('./engine/lead-bridge.js');
+    } catch (e) { console.warn('[KAFI Admin] Lead bridge not loaded:', e.message); }
 
     let WebScraper;
     try {
@@ -1358,6 +1371,30 @@
         // Load CRM Leads
         this.renderCrmLeads();
         this.updateSalesAlerts();
+        this.updateSourcingSyncHint();
+      }
+
+      updateSourcingSyncHint() {
+        const hint = document.getElementById('sourcingSyncHint');
+        const btn = document.getElementById('syncSourcingBtn');
+        if (!hint || !LeadBridge) return;
+        const pending = LeadBridge.countPendingSourcingBuyers(0);
+        hint.textContent = pending
+          ? `${pending} buyer lead(s) in Sourcing are ready to import into Agent 1 CRM.`
+          : 'Sourcing buyers are synced — use Import from Sourcing after new LinkedIn imports.';
+        if (btn) btn.textContent = pending ? `↗ Import from Sourcing (${pending})` : '↗ Import from Sourcing';
+      }
+
+      syncFromSourcing() {
+        if (!LeadBridge) {
+          this.showToast('Lead bridge module not loaded', 'error');
+          return;
+        }
+        const result = LeadBridge.syncSourcingToSales({ roles: ['buyer', 'both'], minScore: 0 });
+        this.renderCrmLeads();
+        this.updateSalesAlerts();
+        this.updateSourcingSyncHint();
+        this.showToast(`Sourcing sync: ${result.added} new, ${result.updated} updated (${result.total} buyers processed)`, 'success');
       }
 
       renderCrmLeads() {
@@ -1369,7 +1406,7 @@
         select.innerHTML = '<option value="">-- Select Lead --</option>';
 
         if (buyers.length === 0) {
-          body.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--text-muted);">No leads analyzed yet. Paste text in the Evaluator to add a lead.</td></tr>`;
+          body.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--text-muted);">No leads yet. Import buyers from Sourcing Agent, or paste text in the Evaluator above.</td></tr>`;
           return;
         }
 
@@ -1377,7 +1414,8 @@
           // Add option to select dropdown
           const opt = document.createElement('option');
           opt.value = idx;
-          opt.textContent = `${b.buyerName} (${b.company || 'Unknown Company'})`;
+          const src = b.sourceChannel === 'sourcing' ? ' · Sourcing' : '';
+          opt.textContent = `${b.buyerName} (${b.company || 'Unknown Company'})${src}`;
           select.appendChild(opt);
 
           // Table row
@@ -1388,9 +1426,13 @@
           if (b.leadScore === 'HOT') scoreClass = 'lead-hot';
           else if (b.leadScore === 'WARM') scoreClass = 'lead-warm';
 
+          const sourceTag = b.sourceChannel === 'sourcing'
+            ? `<span style="font-size:10px;color:#c5992e;margin-left:6px">Sourcing</span>`
+            : '';
+
           tr.innerHTML = `
-            <td style="padding: 12px 16px; font-weight: 500;">${this.escapeHtml(b.buyerName || 'Unknown')}</td>
-            <td style="padding: 12px 16px;">${this.escapeHtml(b.company || 'Unknown')}</td>
+            <td style="padding: 12px 16px; font-weight: 500;">${this.escapeHtml(b.buyerName || 'Unknown')}${sourceTag}</td>
+            <td style="padding: 12px 16px;">${this.escapeHtml(b.company || 'Unknown')}${b.email ? `<br><span style="font-size:11px;color:#9ca3af">${this.escapeHtml(b.email)}</span>` : ''}</td>
             <td style="padding: 12px 16px;">${this.escapeHtml(b.designation || 'Manager')}</td>
             <td style="padding: 12px 16px;">${this.escapeHtml(b.productHandling || 'Commodities')}</td>
             <td style="padding: 12px 16px;">${this.escapeHtml(b.nationality || 'Unknown')}</td>
@@ -1484,8 +1526,13 @@
         const copyOutreachBtn = document.getElementById('copyOutreachBtn');
         const copyGreetingBtn = document.getElementById('copyGreetingBtn');
         const addNewLeadBtn = document.getElementById('addNewLeadBtn');
+        const syncSourcingBtn = document.getElementById('syncSourcingBtn');
 
         if (!evaluateBtn) return; // Guard for pages without sales tabs
+
+        if (syncSourcingBtn) {
+          syncSourcingBtn.addEventListener('click', () => this.syncFromSourcing());
+        }
 
         // 1. Evaluate Lead
         evaluateBtn.addEventListener('click', async () => {

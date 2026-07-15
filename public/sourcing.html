@@ -87,6 +87,8 @@
         <div><label class="lbl">&nbsp;</label><label style="font-size:12px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="fEmail"> Has email</label></div>
         <button class="btn sm ghost" id="exportBtn">⬇ Export CSV</button>
         <button class="btn sm" id="enrichSelBtn">🔍 Enrich selected</button>
+        <button class="btn sm gold" id="sendSalesBtn" title="Send selected buyers to Agent 1 Sales CRM">↗ Send to Sales (Agent 1)</button>
+        <button class="btn sm ghost" id="sendAllBuyersBtn">↗ Sync all buyers</button>
       </div>
       <div class="card" style="padding:0;overflow:hidden">
         <div class="table-wrap" id="leadsTable"></div>
@@ -244,6 +246,7 @@ https://kafi-group.com</textarea>
 
 <script type="module">
 import * as SA from './engine/sourcing-agent.js';
+import * as LB from './engine/lead-bridge.js';
 import { WebScraper } from './engine/web-scraper.js';
 
 const $ = id => document.getElementById(id);
@@ -292,13 +295,25 @@ if (urlParams.get('outlook') === 'connected') {
 // ── Dashboard ──
 function renderDashboard() {
   const s = SA.leadStats(leads);
+  const inSales = leads.filter(l => l.status === 'sales-synced').length;
+  const pendingSales = LB.countPendingSourcingBuyers(0);
   $('statGrid').innerHTML = `
     <div class="stat"><div class="lbl">Total leads</div><div class="val">${s.total}</div></div>
     <div class="stat"><div class="lbl">Suppliers</div><div class="val" style="color:var(--accent-light)">${s.suppliers}</div></div>
     <div class="stat"><div class="lbl">Buyers</div><div class="val" style="color:#7fd67f">${s.buyers}</div></div>
-    <div class="stat"><div class="lbl">Executives</div><div class="val">${s.executives}</div></div>
-    <div class="stat"><div class="lbl">With email</div><div class="val">${s.withEmail}</div></div>
+    <div class="stat"><div class="lbl">In Sales CRM</div><div class="val" style="color:#c5992e">${inSales}</div></div>
+    <div class="stat"><div class="lbl">Ready for Sales</div><div class="val">${pendingSales}</div></div>
     <div class="stat"><div class="lbl">High priority (70+)</div><div class="val">${s.highPriority}</div></div>`;
+}
+
+function syncBuyersToSales(ids = null) {
+  const opts = { roles: ['buyer', 'both'], minScore: 0 };
+  if (ids?.length) opts.ids = ids;
+  const result = LB.syncSourcingToSales(opts);
+  leads = SA.loadLeads();
+  toast(`Agent 1 CRM: +${result.added} new, ${result.updated} updated`);
+  renderAll();
+  return result;
 }
 
 // ── LinkedIn import ──
@@ -332,7 +347,13 @@ async function handleFiles(fileList) {
   const { leads: merged, added, updated } = SA.mergeLeads(leads, incoming);
   leads = merged;
   SA.saveLeads(leads);
-  $('importPreview').innerHTML = `✅ Imported <b>${incoming.length}</b> rows → <b>${added}</b> new, <b>${updated}</b> updated. Total database: <b>${leads.length}</b>`;
+  const buyerCount = incoming.filter(l => l.roleType === 'buyer' || l.roleType === 'both').length;
+  let syncMsg = '';
+  if (buyerCount > 0) {
+    const sync = syncBuyersToSales(incoming.filter(l => l.roleType === 'buyer' || l.roleType === 'both').map(l => l.id));
+    syncMsg = ` · <b>${sync.added + sync.updated}</b> buyers sent to Agent 1 Sales`;
+  }
+  $('importPreview').innerHTML = `✅ Imported <b>${incoming.length}</b> rows → <b>${added}</b> new, <b>${updated}</b> updated. Total database: <b>${leads.length}</b>${syncMsg}`;
   toast(`LinkedIn import done: +${added} new contacts`);
   renderAll();
 }
@@ -366,8 +387,8 @@ function renderLeads() {
       <td style="max-width:160px">${esc(l.position)}</td>
       <td>${l.email ? esc(l.email) : '<span style="color:var(--text-3)">—</span>'}</td>
       <td>${roleBadge(l.roleType)}</td>
-      <td><b>${l.score}</b></td>
-      <td style="font-size:11px;color:var(--text-3)">${esc(l.source)}</td>
+      <td><b>${l.score}</b>${l.salesLeadScore ? ` <span style="font-size:10px;color:#c5992e">${esc(l.salesLeadScore)}</span>` : ''}</td>
+      <td style="font-size:11px;color:var(--text-3)">${esc(l.source)}${l.status === 'sales-synced' ? ' · <span style="color:#c5992e">Sales</span>' : ''}</td>
       <td>${l.domain || l.companyUrl ? `<button class="btn sm ghost enrich-one" data-id="${esc(l.id)}">Enrich</button>` : ''}</td>
     </tr>`).join('') + '</tbody></table>';
 
@@ -394,6 +415,21 @@ $('exportBtn').addEventListener('click', () => {
   const filtered = SA.filterLeads(leads, getFilters());
   SA.downloadCSV(`kafi-leads-${Date.now()}.csv`, SA.exportLeadsCSV(filtered));
   toast(`Exported ${filtered.length} leads`);
+});
+
+$('sendSalesBtn').addEventListener('click', () => {
+  const ids = [...selected];
+  if (!ids.length) { toast('Select buyer leads first (Role: Buyer or Both)'); return; }
+  const selectedLeads = leads.filter(l => ids.includes(l.id));
+  const buyers = selectedLeads.filter(l => l.roleType === 'buyer' || l.roleType === 'both');
+  if (!buyers.length) { toast('Selected rows are suppliers — pick buyers for Agent 1 Sales'); return; }
+  syncBuyersToSales(buyers.map(l => l.id));
+});
+
+$('sendAllBuyersBtn').addEventListener('click', () => {
+  const n = leads.filter(l => l.roleType === 'buyer' || l.roleType === 'both').length;
+  if (!n) { toast('No buyer leads in database'); return; }
+  syncBuyersToSales();
 });
 
 // ── Enrichment ──
@@ -475,6 +511,9 @@ $('discSearchBtn').addEventListener('click', async () => {
       const { leads: merged, added } = SA.mergeLeads(leads, [lead]);
       leads = merged;
       SA.saveLeads(leads);
+      if (intent === 'buyer' || lead.roleType === 'buyer' || lead.roleType === 'both') {
+        syncBuyersToSales([lead.id]);
+      }
       toast(added ? 'Lead added' : 'Already in database');
       renderAll();
     });

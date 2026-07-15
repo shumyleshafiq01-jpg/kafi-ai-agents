@@ -23,6 +23,7 @@ Thumbs.db
 my chat analysis.txt
 chat data an internee made.txt
 NeuroGrid_Complete_Context*.txt
+data/_agents_doc_extract.txt
 
 # Unrelated local docs / assets
 *.docx

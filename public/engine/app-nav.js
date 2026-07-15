@@ -6,6 +6,8 @@
     { id: "sales", label: "Agent 1 — International Sales Chatbot", href: "/index.html", paths: ["/", "/index.html"] },
     { id: "supply", label: "Agent 6 — Supply Chain", href: "/supply-chain.html", paths: ["/supply-chain.html"] },
     { id: "sourcing", label: "Sourcing & Procurement", href: "/sourcing.html", paths: ["/sourcing.html"] },
+    { id: "warehouse", label: "Agent 8 — Warehouse & QC", href: "/warehouse-qc.html", paths: ["/warehouse-qc.html"] },
+    { id: "security", label: "Agent 10 — Security Monitoring", href: "/security.html", paths: ["/security.html"] },
     { id: "admin", label: "Admin / Training", href: "/admin.html", paths: ["/admin.html"] },
   ];
 

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAFI Agent 10 — Security Monitoring</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/vision.css">
+  <script src="engine/app-nav.js" defer></script>
+</head>
+<body class="theme-security">
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">10</div>
+      <div><b>Security Monitor</b><span>Office &amp; Mill · Agent 10</span></div>
+    </div>
+    <button class="nav-item active" data-panel="monitor">📹 Live feeds</button>
+    <button class="nav-item" data-panel="zones">🚧 Zones</button>
+    <button class="nav-item" data-panel="visitors">👤 Visitors</button>
+    <button class="nav-item" data-panel="reports">📋 Reports</button>
+    <div style="flex:1"></div>
+  </aside>
+
+  <main class="main">
+    <section class="panel active" id="panel-monitor">
+      <div class="page-title">Security live monitor</div>
+      <div class="page-sub">Office, mill, and restricted areas — person detection, unauthorized access, safety violations.</div>
+      <div id="engineStatus" class="status-pill demo">Checking vision engine…</div>
+      <div class="grid-2">
+        <div class="card" style="padding:12px">
+          <label class="lbl">Camera zone</label>
+          <select class="sel" id="zoneSelect">
+            <option value="office">Office entrance</option>
+            <option value="mill">Mill floor</option>
+            <option value="warehouse">Warehouse gate</option>
+            <option value="restricted">Restricted area</option>
+          </select>
+          <div class="video-wrap" style="margin-top:12px">
+            <video id="video" playsinline muted autoplay></video>
+            <canvas id="capture" style="display:none"></canvas>
+            <canvas id="overlay"></canvas>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="btnCamera">Start camera</button>
+            <button class="btn" id="btnMonitor" disabled>Start monitoring</button>
+            <button class="btn ghost" id="btnSnap">Single scan</button>
+            <button class="btn ghost danger" id="btnStop" disabled>Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🚨 Security alerts</h3>
+          <div class="alert-list" id="alertList"><p style="color:var(--text-3);font-size:12px">No alerts yet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-zones">
+      <div class="page-title">Monitored zones</div>
+      <div class="page-sub">Configure which areas each feed watches (MVP — local labels; RTSP/IP cameras in phase 2).</div>
+      <div class="card">
+        <ul class="checklist">
+          <li><strong>Office</strong> — visitor tracking, after-hours access</li>
+          <li><strong>Mill</strong> — safety PPE, restricted machinery proximity</li>
+          <li><strong>Warehouse gate</strong> — loading theft prevention</li>
+          <li><strong>Restricted</strong> — unauthorized person alert (high severity)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-visitors">
+      <div class="page-title">Visitor log</div>
+      <div class="page-sub">Manual check-in until face/ badge integration.</div>
+      <div class="card">
+        <div style="display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end">
+          <div><label class="lbl">Name</label><input class="inp" id="visName" placeholder="Visitor name"></div>
+          <div><label class="lbl">Purpose</label><input class="inp" id="visPurpose" placeholder="Meeting / delivery"></div>
+          <button class="btn sm" id="visCheckIn">Check in</button>
+        </div>
+        <div id="visList" style="margin-top:16px;font-size:12px;color:var(--text-2)"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-reports">
+      <div class="page-title">Incident reports</div>
+      <button class="btn" id="btnExport">⬇ Export security log CSV</button>
+      <button class="btn ghost" id="btnClear">Clear log</button>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import {
+  VisionMonitor, fetchVisionStatus, loadAlerts, pushAlert, ALERTS_KEY_SECURITY, exportAlertsCSV,
+} from './engine/vision-agent.js';
+
+const VIS_KEY = 'kafi_security_visitors';
+const $ = id => document.getElementById(id);
+let monitor = null;
+
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('panel-' + btn.dataset.panel).classList.add('active');
+  });
+});
+
+function renderAlerts() {
+  const list = loadAlerts(ALERTS_KEY_SECURITY);
+  const el = $('alertList');
+  if (!list.length) { el.innerHTML = '<p style="color:var(--text-3);font-size:12px">No alerts yet.</p>'; return; }
+  el.innerHTML = list.slice(0, 80).map(a => `
+    <div class="alert-item ${a.severity || 'info'}">
+      <strong>${a.message || a.type}</strong>
+      <time>${new Date(a.at).toLocaleString()}</time>
+    </div>`).join('');
+}
+
+function renderVisitors() {
+  const list = JSON.parse(localStorage.getItem(VIS_KEY) || '[]');
+  $('visList').innerHTML = list.length
+    ? list.map(v => `<div style="padding:8px 0;border-bottom:1px solid var(--line)"><b>${v.name}</b> — ${v.purpose}<br><span style="font-size:10px;color:var(--text-3)">${new Date(v.at).toLocaleString()}</span></div>`).join('')
+    : '<p style="color:var(--text-3)">No visitors checked in today.</p>';
+}
+
+async function initStatus() {
+  try {
+    const st = await fetchVisionStatus();
+    const el = $('engineStatus');
+    el.className = st.demoMode ? 'status-pill demo' : 'status-pill live';
+    el.textContent = st.demoMode ? 'Demo mode — local YOLO for production feeds' : `YOLO active · ${st.modelPath}`;
+  } catch {
+    $('engineStatus').textContent = 'Vision API offline — run python server.py';
+  }
+}
+
+function ensureMonitor() {
+  if (monitor) return monitor;
+  monitor = new VisionMonitor({
+    video: $('video'), canvas: $('capture'), overlay: $('overlay'),
+    mode: 'security', alertsKey: ALERTS_KEY_SECURITY,
+    onTick: r => {
+      const zone = $('zoneSelect').value;
+      if (zone === 'restricted' && r.detections?.some(d => d.label === 'person')) {
+        pushAlert(ALERTS_KEY_SECURITY, {
+          severity: 'high', type: 'restricted',
+          message: `Person in RESTRICTED zone (${zone})`, label: 'person',
+        });
+      }
+      renderAlerts();
+    },
+    onError: e => console.warn('[SEC]', e.message),
+  });
+  return monitor;
+}
+
+$('btnCamera').addEventListener('click', async () => {
+  try {
+    await ensureMonitor().startCamera();
+    ['btnMonitor','btnSnap','btnStop'].forEach(id => $(id).disabled = false);
+    $('btnCamera').textContent = 'Camera active';
+  } catch (e) { alert('Camera: ' + e.message); }
+});
+
+$('btnMonitor').addEventListener('click', () => { ensureMonitor().startMonitoring(); $('btnMonitor').textContent = 'Monitoring…'; });
+$('btnSnap').addEventListener('click', () => { if (ensureMonitor().video.videoWidth) ensureMonitor()._tick(); });
+$('btnStop').addEventListener('click', () => { if (monitor) monitor.stopMonitoring(); $('btnMonitor').textContent = 'Start monitoring'; });
+
+$('visCheckIn').addEventListener('click', () => {
+  const name = $('visName').value.trim();
+  if (!name) return;
+  const list = JSON.parse(localStorage.getItem(VIS_KEY) || '[]');
+  list.unshift({ name, purpose: $('visPurpose').value.trim() || 'Visit', at: new Date().toISOString() });
+  localStorage.setItem(VIS_KEY, JSON.stringify(list.slice(0, 200)));
+  $('visName').value = ''; $('visPurpose').value = '';
+  renderVisitors();
+});
+
+$('btnExport').addEventListener('click', () => exportAlertsCSV(loadAlerts(ALERTS_KEY_SECURITY), `kafi-security-${Date.now()}.csv`));
+$('btnClear').addEventListener('click', () => { if (confirm('Clear security log?')) { localStorage.removeItem(ALERTS_KEY_SECURITY); renderAlerts(); } });
+
+renderAlerts();
+renderVisitors();
+initStatus();
+</script>
+</body>
+</html>

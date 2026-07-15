@@ -484,6 +484,7 @@ def call_ai(messages, system="", max_tokens=2048):
 # ═══════════════════════════════════════════════════════════════
 
 import server_sourcing as sourcing
+import server_vision as vision
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -527,6 +528,8 @@ class KAFIHandler(SimpleHTTPRequestHandler):
             self._handle_outlook_device_poll()
         elif self.path == "/api/outlook/smtp/test":
             self._handle_outlook_smtp_test()
+        elif self.path == "/api/vision/detect":
+            self._handle_vision_detect()
         else:
             self.send_error(404, "API endpoint not found")
 
@@ -561,6 +564,9 @@ class KAFIHandler(SimpleHTTPRequestHandler):
             return
         if clean_path == "/api/outlook/status":
             self._handle_outlook_status()
+            return
+        if clean_path == "/api/vision/status":
+            self._handle_vision_status()
             return
         super().do_GET()
 
@@ -952,6 +958,14 @@ class KAFIHandler(SimpleHTTPRequestHandler):
         result = sourcing.outlook_send_bulk(recipients, subject, html_body, delay_seconds=delay)
         self._send_json({"ok": True, **result})
 
+    def _handle_vision_status(self):
+        self._send_json(vision.vision_status())
+
+    def _handle_vision_detect(self):
+        body = self._read_body()
+        data, status = vision.handle_detect(body)
+        self._send_json(data, status)
+
     def log_message(self, format, *args):
         """Quieter logging — only show API calls, not static file requests."""
         msg = format % args
@@ -988,6 +1002,8 @@ def run_server():
 ║  Sales Chatbot:     http://localhost:{PORT}/                 ║
 ║  Supply Chain:      http://localhost:{PORT}/supply-chain.html ║
 ║  Sourcing Agent:    http://localhost:{PORT}/sourcing.html   ║
+║  Warehouse QC (8):  http://localhost:{PORT}/warehouse-qc.html ║
+║  Security (10):     http://localhost:{PORT}/security.html   ║
 ║  Admin Panel:       http://localhost:{PORT}/admin.html      ║
 ║                                                  ║
 ║  API Endpoints:                                  ║

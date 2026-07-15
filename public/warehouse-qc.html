@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAFI Agent 8 — Warehouse &amp; QC Vision</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/vision.css">
+  <script src="engine/app-nav.js" defer></script>
+</head>
+<body class="theme-warehouse">
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">8</div>
+      <div><b>Warehouse &amp; QC</b><span>YOLO Vision · Agent 8</span></div>
+    </div>
+    <button class="nav-item active" data-panel="monitor">📹 Live Monitor</button>
+    <button class="nav-item" data-panel="counts">📦 Counts &amp; QC</button>
+    <button class="nav-item" data-panel="reports">📋 Reports</button>
+    <button class="nav-item" data-panel="setup">⚙️ Setup</button>
+    <div style="flex:1"></div>
+    <div style="font-size:10px;color:var(--text-3);padding:8px">ArUco / QR labour tracking · coming next</div>
+  </aside>
+
+  <main class="main">
+    <section class="panel active" id="panel-monitor">
+      <div class="page-title">Warehouse Live Monitor</div>
+      <div class="page-sub">Camera → YOLO detection → QC alerts. Count rice bags, cartons, pouches; flag damage, missing labels, leakage.</div>
+      <div id="engineStatus" class="status-pill demo">Checking vision engine…</div>
+      <div class="grid-2">
+        <div class="card" style="padding:12px">
+          <div class="video-wrap">
+            <video id="video" playsinline muted autoplay></video>
+            <canvas id="capture" style="display:none"></canvas>
+            <canvas id="overlay"></canvas>
+          </div>
+          <div class="btn-row">
+            <button class="btn" id="btnCamera">Start camera</button>
+            <button class="btn" id="btnMonitor" disabled>Start monitoring</button>
+            <button class="btn ghost" id="btnSnap">Single scan</button>
+            <button class="btn ghost danger" id="btnStop" disabled>Stop</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>⚠️ Live alerts</h3>
+          <div class="alert-list" id="alertList"><p style="color:var(--text-3);font-size:12px">No alerts yet.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-counts">
+      <div class="page-title">Detection counts</div>
+      <div class="page-sub">Last scan totals by product class.</div>
+      <div class="stat-grid" id="countGrid"></div>
+      <div class="card">
+        <h3>QC checklist (Agent 8 scope)</h3>
+        <ul class="checklist">
+          <li>Inventory / carton counting on loading bay</li>
+          <li>Rice bag &amp; spice pack line verification</li>
+          <li>Damaged packet detection</li>
+          <li>Missing label detection</li>
+          <li>Leakage detection (jars / pouches)</li>
+          <li>Loading verification before dispatch</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-reports">
+      <div class="page-title">Shift reports</div>
+      <div class="page-sub">Export alert log for warehouse supervisor.</div>
+      <button class="btn" id="btnExport">⬇ Export alerts CSV</button>
+      <button class="btn ghost" id="btnClear">Clear alert log</button>
+    </section>
+
+    <section class="panel" id="panel-setup">
+      <div class="page-title">Vision setup</div>
+      <div class="page-sub">Full YOLO runs on your local PC or factory edge server — not on Vercel serverless.</div>
+      <div class="card">
+        <label class="lbl">Scan interval (seconds)</label>
+        <input class="inp" id="interval" type="number" min="1" max="30" value="2.5">
+        <label class="lbl">Confidence threshold</label>
+        <input class="inp" id="confidence" type="number" min="0.1" max="0.95" step="0.05" value="0.35">
+        <p style="font-size:12px;color:var(--text-2);margin-top:16px;line-height:1.6">
+          <strong>Local YOLO (recommended):</strong><br>
+          <code>pip install ultralytics pillow</code><br>
+          Optional custom model: place <code>models/kafi-warehouse.pt</code> in project root.<br>
+          Without YOLO, demo detections run so you can test the UI.
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module">
+import {
+  VisionMonitor, fetchVisionStatus, loadAlerts, ALERTS_KEY_WAREHOUSE, exportAlertsCSV,
+} from './engine/vision-agent.js';
+
+const $ = id => document.getElementById(id);
+let monitor = null;
+let lastCounts = {};
+
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('panel-' + btn.dataset.panel).classList.add('active');
+  });
+});
+
+function renderAlerts() {
+  const list = loadAlerts(ALERTS_KEY_WAREHOUSE);
+  const el = $('alertList');
+  if (!list.length) { el.innerHTML = '<p style="color:var(--text-3);font-size:12px">No alerts yet.</p>'; return; }
+  el.innerHTML = list.slice(0, 80).map(a => `
+    <div class="alert-item ${a.severity || 'info'}">
+      <strong>${a.message || a.type}</strong>
+      <time>${new Date(a.at).toLocaleString()}</time>
+    </div>`).join('');
+}
+
+function renderCounts(counts = lastCounts) {
+  lastCounts = counts;
+  const keys = Object.keys(counts);
+  $('countGrid').innerHTML = keys.length
+    ? keys.map(k => `<div class="stat"><div class="lbl">${k}</div><div class="val">${counts[k]}</div></div>`).join('')
+    : '<p style="color:var(--text-3);font-size:12px">Run a scan to see counts.</p>';
+}
+
+async function initStatus() {
+  try {
+    const st = await fetchVisionStatus();
+    const el = $('engineStatus');
+    if (st.demoMode) {
+      el.className = 'status-pill demo';
+      el.textContent = 'Demo mode — install ultralytics locally for real YOLO';
+    } else {
+      el.className = 'status-pill live';
+      el.textContent = `YOLO active · ${st.modelPath || 'model loaded'}`;
+    }
+  } catch {
+    $('engineStatus').textContent = 'Vision API offline — run python server.py';
+  }
+}
+
+function ensureMonitor() {
+  if (monitor) return monitor;
+  monitor = new VisionMonitor({
+    video: $('video'),
+    canvas: $('capture'),
+    overlay: $('overlay'),
+    mode: 'warehouse',
+    alertsKey: ALERTS_KEY_WAREHOUSE,
+    onTick: r => { renderCounts(r.counts); renderAlerts(); },
+    onError: e => console.warn('[QC]', e.message),
+  });
+  monitor.intervalMs = Number($('interval').value) * 1000 || 2500;
+  return monitor;
+}
+
+$('btnCamera').addEventListener('click', async () => {
+  try {
+    await ensureMonitor().startCamera();
+    $('btnMonitor').disabled = false;
+    $('btnSnap').disabled = false;
+    $('btnStop').disabled = false;
+    $('btnCamera').textContent = 'Camera active';
+  } catch (e) {
+    alert('Camera access denied or unavailable: ' + e.message);
+  }
+});
+
+$('btnMonitor').addEventListener('click', () => {
+  const m = ensureMonitor();
+  m.intervalMs = Number($('interval').value) * 1000 || 2500;
+  m.startMonitoring();
+  $('btnMonitor').textContent = 'Monitoring…';
+});
+
+$('btnSnap').addEventListener('click', async () => {
+  const m = ensureMonitor();
+  if (!m.video.videoWidth) { alert('Start camera first'); return; }
+  m._tick();
+});
+
+$('btnStop').addEventListener('click', () => {
+  if (monitor) monitor.stopMonitoring();
+  $('btnMonitor').textContent = 'Start monitoring';
+});
+
+$('btnExport').addEventListener('click', () => {
+  exportAlertsCSV(loadAlerts(ALERTS_KEY_WAREHOUSE), `kafi-warehouse-qc-${Date.now()}.csv`);
+});
+
+$('btnClear').addEventListener('click', () => {
+  if (confirm('Clear all warehouse alerts?')) {
+    localStorage.removeItem(ALERTS_KEY_WAREHOUSE);
+    renderAlerts();
+  }
+});
+
+renderAlerts();
+initStatus();
+</script>
+</body>
+</html>

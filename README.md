@@ -20,25 +20,29 @@ pip install -r requirements.txt
 python server.py
 ```
 
+Frontend files live in `public/`; secret API configs stay in `data/` (gitignored).
+
 Or double-click `run-server.bat` (Windows).
 
 Opens http://localhost:8000 with all agents and API routes.
 
 **Admin password (local default):** `kafi2026`
 
-## Deploy to Vercel
+**Live:** https://kafi-ai-agents.vercel.app
 
-1. Push this folder to GitHub
-2. Import the repo in [Vercel](https://vercel.com)
-3. Set environment variables:
+**GitHub:** https://github.com/shumyleshafiq01-jpg/kafi-ai-agents
+
+## Deploy / Vercel env
+
+Set these in the Vercel project dashboard:
 
 | Variable | Example | Purpose |
 |----------|---------|---------|
 | `KAFI_ADMIN_PASSWORD` | your-secure-password | Settings / API admin auth |
-| `KAFI_BASE_URL` | `https://your-app.vercel.app` | Outlook OAuth redirect base |
+| `KAFI_BASE_URL` | `https://kafi-ai-agents.vercel.app` | Outlook OAuth redirect base |
 
-4. After deploy, add your Vercel URL as Outlook redirect URI in Azure:
-   `https://your-app.vercel.app/api/outlook/callback`
+Add this Outlook redirect URI in Azure:
+`https://kafi-ai-agents.vercel.app/api/outlook/callback`
 
 ### Vercel notes
 

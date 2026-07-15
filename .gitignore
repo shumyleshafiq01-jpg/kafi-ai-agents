@@ -27,3 +27,4 @@ NeuroGrid_Complete_Context*.txt
 # Unrelated local docs / assets
 *.docx
 Pics/
+.vercel

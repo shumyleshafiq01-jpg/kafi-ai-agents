@@ -19,6 +19,7 @@ Endpoints:
 import contextlib
 import http.server
 import json
+import os
 import re
 import socket
 import sys
@@ -45,6 +46,7 @@ except ImportError:
 
 # ── Constants ────────────────────────────────────────────────
 PORT = 8000
+WEB_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public")
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -490,6 +492,9 @@ import server_sourcing as sourcing
 
 class KAFIHandler(SimpleHTTPRequestHandler):
     """Custom handler that serves static files AND API endpoints."""
+
+    def __init__(self, request, client_address, server):
+        super().__init__(request, client_address, server, directory=WEB_ROOT)
 
     def do_POST(self):
         if self.path == "/api/search":

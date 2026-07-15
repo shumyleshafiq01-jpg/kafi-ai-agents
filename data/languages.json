@@ -1,0 +1,117 @@
+{
+  "supportedLanguages": ["en", "ur"],
+  "defaultLanguage": "en",
+
+  "labels": {
+    "en": {
+      "chatTitle": "KAFI Assistant",
+      "chatSubtitle": "Online | Premium Food Products",
+      "inputPlaceholder": "Type your message...",
+      "sendButton": "Send",
+      "poweredBy": "Powered by NeuroGrid Labs",
+      "welcomeMessage": "Welcome to Kafi Group! 👋 I'm your KAFI Assistant. How can I help you today?",
+      "typingIndicator": "KAFI Assistant is typing...",
+      "languageToggle": "اردو",
+      "quickReplies": {
+        "viewProducts": "View Products",
+        "rice": "Rice",
+        "pinkSalt": "Pink Salt",
+        "spices": "Spices",
+        "desserts": "Desserts",
+        "contactUs": "Contact Us",
+        "whatsapp": "WhatsApp",
+        "catalogue": "View Catalogue",
+        "orderHelp": "How to Order"
+      },
+      "form": {
+        "title": "Get in Touch",
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "company": "Company Name",
+        "message": "Your Message",
+        "submit": "Send Inquiry",
+        "success": "Thank you! Your inquiry has been submitted. Our team will reach out soon.",
+        "error": "Something went wrong. Please try WhatsApp at +92-300-8206633 instead."
+      },
+      "productCard": {
+        "viewProduct": "View Product",
+        "category": "Category",
+        "weights": "Available Sizes"
+      },
+      "whatsapp": {
+        "buttonText": "Continue on WhatsApp",
+        "prefilledMessage": "Hi Kafi Group, I was chatting on your website and would like to continue on WhatsApp."
+      }
+    },
+    "ur": {
+      "chatTitle": "KAFI اسسٹنٹ",
+      "chatSubtitle": "آن لائن | پریمیم فوڈ پروڈکٹس",
+      "inputPlaceholder": "اپنا پیغام لکھیں...",
+      "sendButton": "بھیجیں",
+      "poweredBy": "NeuroGrid Labs کی طرف سے",
+      "welcomeMessage": "Kafi Group mein khush aamdeed! 👋 Main aapka KAFI Assistant hoon. Aaj kaise madad kar sakta hoon?",
+      "typingIndicator": "KAFI Assistant likh raha hai...",
+      "languageToggle": "English",
+      "quickReplies": {
+        "viewProducts": "Products Dekhein",
+        "rice": "Chawal",
+        "pinkSalt": "Gulabi Namak",
+        "spices": "Masale",
+        "desserts": "Meethai",
+        "contactUs": "Rabta Karein",
+        "whatsapp": "WhatsApp",
+        "catalogue": "Catalogue Dekhein",
+        "orderHelp": "Order Kaise Dein"
+      },
+      "form": {
+        "title": "Rabta Karein",
+        "name": "Poora Naam",
+        "email": "Email Pata",
+        "phone": "Phone Number",
+        "company": "Company ka Naam",
+        "message": "Aapka Paigham",
+        "submit": "Inquiry Bhejein",
+        "success": "Shukriya! Aapki inquiry mil gayi hai. Hamari team jald rabta karegi.",
+        "error": "Kuch masla hua. WhatsApp par +92-300-8206633 pe rabta karein."
+      },
+      "productCard": {
+        "viewProduct": "Product Dekhein",
+        "category": "Category",
+        "weights": "Dastiyaab Sizes"
+      },
+      "whatsapp": {
+        "buttonText": "WhatsApp par baat karein",
+        "prefilledMessage": "Assalam o Alaikum Kafi Group, main aapki website par chat kar raha tha aur WhatsApp par baat karna chahta hoon."
+      }
+    }
+  },
+
+  "detection": {
+    "urduKeywords": [
+      "kia", "kya", "hain", "hai", "ap", "aap", "mujhay", "mujhe",
+      "bhai", "yeh", "ye", "acha", "achha", "batao", "bataein",
+      "chahiye", "chahte", "kahan", "kitna", "kitne", "kitni",
+      "wala", "wali", "wale", "sahab", "sahib", "jaan", "ji",
+      "haan", "nahi", "bilkul", "zaroor", "theek", "thik",
+      "shukriya", "khuda", "allah", "mashallah", "inshallah",
+      "aur", "ya", "par", "mein", "se", "ka", "ki", "ke",
+      "ho", "hoon", "hum", "tum", "woh", "yaar",
+      "karo", "karna", "kijiye", "dijiye", "rakhein",
+      "dikhao", "batein", "suno", "bolo", "likhein",
+      "bhejein", "dein", "lein", "karein", "dekhein",
+      "masla", "mushkil", "aasan", "behtar", "behtareen",
+      "chawal", "namak", "masala", "roti", "khana", "pani",
+      "paisay", "rupay", "qeemat", "sasta", "mehnga",
+      "ghar", "dukaan", "office", "mulk",
+      "bohat", "zyada", "kam", "thora", "bara", "chota"
+    ],
+    "urduThreshold": 2,
+    "urduPhrases": [
+      "kia haal", "kaise ho", "assalam o alaikum", "khuda hafiz",
+      "allah hafiz", "jazak allah", "masha allah", "in sha allah",
+      "ap ka", "mere liye", "koi baat nahi", "theek hai",
+      "baat karni", "order dena", "price kya hai"
+    ]
+  }
+}

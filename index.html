@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KAFI Group — Premium International Food Commodities. Chat with our AI assistant.">
+  <title>KAFI Group — Chat Assistant</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/chat.css">
+  <script src="engine/app-nav.js" defer></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       KAFI AI AGENT — Premium Chat Widget
+       © 2026 NeuroGrid Labs · Built for KAFI Group
+       ═══════════════════════════════════════════════════════════ -->
+
+  <div class="kafi-chat-widget" id="kafiChatWidget" role="application" aria-label="KAFI Group Chat Assistant">
+
+    <!-- ── Floating Chat Bubble ─────────────────────────────── -->
+    <button
+      class="kafi-chat-bubble"
+      id="kafiBubble"
+      type="button"
+      aria-label="Open chat assistant"
+      aria-expanded="false"
+      aria-controls="kafiChatWindow"
+    >
+      <!-- Chat Bubble Icon -->
+      <svg class="icon-chat" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm0 15.2L18.8 16H4V4h16v13.2zM7 9h2v2H7V9zm4 0h2v2h-2V9zm4 0h2v2h-2V9z"/>
+      </svg>
+      <!-- Close Icon (shown when open) -->
+      <svg class="icon-close" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    </button>
+
+
+    <!-- ── Chat Window ──────────────────────────────────────── -->
+    <div
+      class="kafi-chat-window"
+      id="kafiChatWindow"
+      role="dialog"
+      aria-label="Chat with KAFI Assistant"
+      aria-hidden="true"
+    >
+
+      <!-- Header -->
+      <header class="kafi-chat-header">
+        <div class="kafi-chat-header-logo" aria-hidden="true">K</div>
+        <div class="kafi-chat-header-info">
+          <div class="kafi-chat-header-title">KAFI Assistant</div>
+          <div class="kafi-chat-header-status">
+            <span class="kafi-status-dot" aria-hidden="true"></span>
+            <span>Online — Ready to help</span>
+          </div>
+        </div>
+
+        <!-- WhatsApp Button -->
+        <a
+          class="kafi-whatsapp-btn"
+          href="https://wa.me/923008206633?text=Hi%20KAFI%20Group%2C%20I%20was%20chatting%20on%20your%20website%20and%20would%20like%20to%20continue%20on%20WhatsApp."
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Continue on WhatsApp"
+          title="Continue on WhatsApp"
+        >
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+        </a>
+
+        <!-- Close Button -->
+        <button
+          class="kafi-chat-header-close"
+          id="kafiClose"
+          type="button"
+          aria-label="Close chat"
+        >
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+          </svg>
+        </button>
+      </header>
+
+
+      <!-- Messages Area -->
+      <div
+        class="kafi-chat-messages"
+        id="kafiMessages"
+        role="log"
+        aria-live="polite"
+        aria-label="Chat messages"
+      >
+        <!-- Messages rendered dynamically by JS -->
+      </div>
+
+
+      <!-- Input Area -->
+      <div class="kafi-chat-input-area">
+        <!-- Language Toggle -->
+        <button
+          class="kafi-lang-toggle"
+          id="kafiLangToggle"
+          type="button"
+          aria-label="Toggle language between English and Urdu"
+          title="Toggle Language"
+        >
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+          <span class="kafi-lang-label" id="kafiLangLabel">EN</span>
+        </button>
+
+        <!-- Text Input -->
+        <input
+          type="text"
+          class="kafi-chat-input"
+          id="kafiInput"
+          placeholder="Type your message..."
+          aria-label="Type your message"
+          autocomplete="off"
+          maxlength="500"
+        >
+
+        <!-- Send Button -->
+        <button
+          class="kafi-send-btn"
+          id="kafiSend"
+          type="button"
+          aria-label="Send message"
+          title="Send"
+        >
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+
+      <!-- Powered By -->
+      <div class="kafi-powered-by" aria-label="Powered by NeuroGrid Labs">
+        <span>Powered by <a href="https://neurogridlabs.com" target="_blank" rel="noopener noreferrer">NeuroGrid Labs</a></span>
+      </div>
+
+    </div><!-- /.kafi-chat-window -->
+  </div><!-- /.kafi-chat-widget -->
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       APPLICATION LOGIC
+       ═══════════════════════════════════════════════════════════ -->
+  <script type="module">
+    // ── Engine Imports (ES Modules) ──────────────────────────
+    // These will be loaded when the engine files exist.
+    // Graceful fallback if modules aren't built yet.
+    let NLPEngine, ConversationManager, LearningEngine, ResponseGenerator, APIConnector;
+    let productCatalog, trainingData;
+
+    try {
+      const nlp = await import('./engine/nlp-engine.js');
+      NLPEngine = nlp.NLPEngine || nlp.default;
+    } catch (e) { console.warn('[KAFI] NLP engine not loaded:', e.message); }
+
+    try {
+      const conv = await import('./engine/conversation-manager.js');
+      ConversationManager = conv.ConversationManager || conv.default;
+    } catch (e) { console.warn('[KAFI] Conversation manager not loaded:', e.message); }
+
+    try {
+      const learn = await import('./engine/learning-engine.js');
+      LearningEngine = learn.LearningEngine || learn.default;
+    } catch (e) { console.warn('[KAFI] Learning engine not loaded:', e.message); }
+
+    try {
+      const resp = await import('./engine/response-generator.js');
+      ResponseGenerator = resp.ResponseGenerator || resp.default;
+    } catch (e) { console.warn('[KAFI] Response generator not loaded:', e.message); }
+
+    try {
+      const api = await import('./engine/api-connector.js');
+      APIConnector = api.APIConnector || api.default;
+    } catch (e) { console.warn('[KAFI] API Connector not loaded:', e.message); }
+
+    try {
+      const products = await import('./data/products.js');
+      productCatalog = products.products || products.default || [];
+    } catch (e) { console.warn('[KAFI] Product data not loaded:', e.message); productCatalog = []; }
+
+    try {
+      const training = await import('./data/training-data.js');
+      trainingData = training.trainingData || training.default || {};
+    } catch (e) { console.warn('[KAFI] Training data not loaded:', e.message); trainingData = {}; }
+
+
+    // ═══════════════════════════════════════════════════════════
+    //  ChatApp — Main Application Class
+    // ═══════════════════════════════════════════════════════════
+
+    class ChatApp {
+      constructor() {
+        // DOM Elements
+        this.bubble     = document.getElementById('kafiBubble');
+        this.window     = document.getElementById('kafiChatWindow');
+        this.messages   = document.getElementById('kafiMessages');
+        this.input      = document.getElementById('kafiInput');
+        this.sendBtn    = document.getElementById('kafiSend');
+        this.closeBtn   = document.getElementById('kafiClose');
+        this.langToggle = document.getElementById('kafiLangToggle');
+        this.langLabel  = document.getElementById('kafiLangLabel');
+
+        // State
+        this.isOpen       = false;
+        this.isFirstOpen  = true;
+        this.language     = 'en';
+        this.sessionId    = this.generateSessionId();
+        this.messageCount = 0;
+
+        // Engine instances
+        this.nlp          = NLPEngine ? new NLPEngine(trainingData) : null;
+        this.conversation = ConversationManager ? new ConversationManager() : null;
+        this.learning     = LearningEngine ? new LearningEngine() : null;
+        this.responder    = ResponseGenerator ? new ResponseGenerator(productCatalog) : null;
+        this.apiConnector = APIConnector ? new APIConnector() : null;
+
+        // Initialize
+        this.bindEvents();
+        console.log(`%c[KAFI] Chat widget initialized · Session: ${this.sessionId}`, 'color: #1a5e1a; font-weight: bold;');
+      }
+
+
+      // ── Session ID Generator ────────────────────────────────
+      generateSessionId() {
+        const ts = Date.now().toString(36);
+        const rand = Math.random().toString(36).substring(2, 8);
+        return `kafi_${ts}_${rand}`;
+      }
+
+
+      // ── Event Bindings ──────────────────────────────────────
+      bindEvents() {
+        // Open / Close
+        this.bubble.addEventListener('click', () => this.toggleChat());
+        this.closeBtn.addEventListener('click', () => this.closeChat());
+
+        // Send message
+        this.sendBtn.addEventListener('click', () => this.handleSend());
+        this.input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            this.handleSend();
+          }
+        });
+
+        // Language toggle
+        this.langToggle.addEventListener('click', () => this.toggleLanguage());
+
+        // Keyboard: Escape to close
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && this.isOpen) this.closeChat();
+        });
+      }
+
+
+      // ── Chat Open / Close ───────────────────────────────────
+      toggleChat() {
+        this.isOpen ? this.closeChat() : this.openChat();
+      }
+
+      openChat() {
+        this.isOpen = true;
+        this.window.classList.add('is-visible');
+        this.window.setAttribute('aria-hidden', 'false');
+        this.bubble.classList.add('is-open');
+        this.bubble.setAttribute('aria-expanded', 'true');
+        this.bubble.setAttribute('aria-label', 'Close chat assistant');
+
+        if (this.isFirstOpen) {
+          this.isFirstOpen = false;
+          this.runWelcomeSequence();
+        }
+
+        // Focus input
+        setTimeout(() => this.input.focus(), 400);
+      }
+
+      closeChat() {
+        this.isOpen = false;
+        this.window.classList.remove('is-visible');
+        this.window.setAttribute('aria-hidden', 'true');
+        this.bubble.classList.remove('is-open');
+        this.bubble.setAttribute('aria-expanded', 'false');
+        this.bubble.setAttribute('aria-label', 'Open chat assistant');
+      }
+
+
+      // ── Welcome Sequence ────────────────────────────────────
+      runWelcomeSequence() {
+        // Welcome visual block
+        const welcome = document.createElement('div');
+        welcome.className = 'kafi-welcome-msg';
+        welcome.innerHTML = `
+          <div class="kafi-welcome-icon" aria-hidden="true">K</div>
+          <div class="kafi-welcome-title">Welcome to KAFI Group</div>
+          <div class="kafi-welcome-text">
+            Premium Himalayan Pink Salt, Rice, Spices & Desserts — exported worldwide from Pakistan.
+          </div>
+        `;
+        this.messages.appendChild(welcome);
+
+        // Bot greeting message
+        setTimeout(() => {
+          this.addBotMessage(
+            this.language === 'ur'
+              ? 'السلام علیکم! KAFI Group میں خوش آمدید۔ میں آپ کی کس طرح مدد کر سکتا ہوں؟'
+              : 'Assalam-o-Alaikum! Welcome to KAFI Group. How may I assist you with our premium products today?'
+          );
+
+          // Quick replies
+          this.addQuickReplies([
+            { text: '🛍️ View Products',     value: 'show me your products' },
+            { text: '🍚 Rice Collection',    value: 'tell me about rice' },
+            { text: '🧂 Pink Salt',          value: 'himalayan pink salt' },
+            { text: '📞 Contact Us',         value: 'I want to contact you' },
+          ]);
+        }, 600);
+      }
+
+
+      // ── Handle Send Message ─────────────────────────────────
+      async handleSend() {
+        const text = this.input.value.trim();
+        if (!text) return;
+
+        // Clear input
+        this.input.value = '';
+
+        // Add user message to UI
+        this.addUserMessage(text);
+
+        // Remove old quick replies
+        this.clearQuickReplies();
+
+        // Log conversation
+        this.logMessage('user', text);
+
+        // Show typing indicator
+        this.showTyping();
+
+        // Generate response
+        const delay = 500 + Math.random() * 300; // 500-800ms
+        await this.sleep(delay);
+
+        // Process through engine or fallback
+        const response = await this.processMessage(text);
+
+        // Hide typing, show response
+        this.hideTyping();
+        this.renderResponse(response);
+      }
+
+
+      // ── Message Processing ──────────────────────────────────
+      async processMessage(text) {
+        const context = this.conversation ? this.conversation.getContext() : {};
+        context.products = productCatalog;
+
+        // Run local classification first to extract entities, language, and intent
+        let intentResult = { intent: 'unknown', confidence: 0, entities: {}, language: 'english' };
+        if (this.nlp) {
+          try {
+            intentResult = this.nlp.classify(text, this.language, context);
+          } catch (e) {
+            console.error('[KAFI] NLP Classification failed:', e);
+          }
+        }
+
+        // Auto-detect language and update UI seamlessly
+        const detectedLangCode = intentResult.language === 'urdu' ? 'ur' : 'en';
+        if (detectedLangCode !== this.language) {
+          this.language = detectedLangCode;
+          this.langLabel.textContent = detectedLangCode.toUpperCase();
+          this.input.placeholder = detectedLangCode === 'ur' ? '...اپنا پیغام ٹائپ کریں' : 'Type your message...';
+          this.input.dir = detectedLangCode === 'ur' ? 'rtl' : 'ltr';
+        }
+
+        // 1. Try external API first if configured and enabled
+        if (this.apiConnector && this.apiConnector.isEnabled()) {
+          try {
+            console.log('[KAFI] External API connector active, sending query...');
+            const apiText = await this.apiConnector.generateResponse(text, context, productCatalog);
+            if (apiText) {
+              const response = {
+                text: apiText,
+                products: [],
+                showForm: false,
+                suggestions: this.language === 'ur' 
+                  ? ['Rabta Karein', 'Products Dekhein', 'Order Kaise'] 
+                  : ['Contact Us', 'View Products', 'How to Order']
+              };
+
+              // Log interaction
+              if (this.learning) {
+                this.learning.logInteraction(this.sessionId, text, 'external_api', response);
+              }
+              if (this.conversation) {
+                this.conversation.addTurn('user', text);
+                this.conversation.addTurn('bot', apiText);
+              }
+              return response;
+            }
+          } catch (err) {
+            console.warn('[KAFI] External API failed, falling back to local NLP:', err);
+          }
+        }
+
+        // 2. Local NLP engine fallback
+        if (this.nlp && this.responder) {
+          try {
+            // Update conversation context state with the classified intent & entities
+            if (this.conversation) {
+              this.conversation.update(intentResult.intent, intentResult.entities);
+            }
+
+            // Get updated context
+            const updatedContext = this.conversation ? this.conversation.getContext() : context;
+            updatedContext.products = productCatalog;
+
+            const response = this.responder.generate(intentResult, text, this.language, updatedContext);
+
+            // Guard against form loop: if a form is shown, record it in the context manager
+            if (this.conversation && (response.showForm || response.showContactForm)) {
+              this.conversation.markFormShown();
+            }
+
+            // Log for learning
+            if (this.learning) {
+              this.learning.logInteraction(this.sessionId, text, intentResult.intent || intentResult, response);
+            }
+
+            if (this.conversation) {
+              this.conversation.addTurn('user', text);
+              this.conversation.addTurn('bot', response.text);
+            }
+
+            return response;
+          } catch (err) {
+            console.error('[KAFI] Engine error:', err);
+          }
+        }
+
+        // Fallback responses (engine not loaded)
+        return this.getFallbackResponse(text);
+      }
+
+
+      // ── Fallback Response System ────────────────────────────
+      getFallbackResponse(text) {
+        const lower = text.toLowerCase();
+
+        // Simple keyword matching fallback
+        const responses = [
+          {
+            keywords: ['hi', 'hello', 'hey', 'assalam', 'salam'],
+            text: 'Welcome to KAFI Group! How may I assist you with our premium products today?',
+            suggestions: ['View Products', 'Rice', 'Pink Salt', 'Contact Us']
+          },
+          {
+            keywords: ['product', 'what do you sell', 'catalog', 'range', 'items'],
+            text: 'KAFI Group exports premium food commodities worldwide: Himalayan Pink Salt (fine, coarse, tiles & blocks), Basmati & Non-Basmati Rice, Spices, Custards, Kheer, Jelly, and Masala Papri. What category interests you?',
+            suggestions: ['Rice', 'Pink Salt', 'Desserts', 'Spices'],
+            products: this.getSampleProducts('all')
+          },
+          {
+            keywords: ['rice', 'basmati', 'sella', 'chawal'],
+            text: 'Our premium rice collection includes Royal Super Parboiled Sella Rice, Ultra XXL Sella Gold Rice, Royal Super White Rice, and Economical Long Grain White Rice. All sourced from the finest Pakistani paddy fields.',
+            suggestions: ['Sella Rice Details', 'White Rice Details', 'Pink Salt', 'Order Now'],
+            products: this.getSampleProducts('rice')
+          },
+          {
+            keywords: ['salt', 'pink salt', 'himalayan', 'namak'],
+            text: 'Our Himalayan Pink Salt range includes Glass Grinders, Fine & Coarse Pencil Jars, Fliptop Bottles (500g), and exquisite Salt Tiles & Blocks for wellness and architecture. All naturally sourced from the Khewra Salt Mine.',
+            suggestions: ['Salt Grinder', 'Salt Tiles', 'Sea Salt', 'Order Now'],
+            products: this.getSampleProducts('salt')
+          },
+          {
+            keywords: ['contact', 'call', 'email', 'phone', 'order', 'buy', 'purchase', 'reach'],
+            text: 'We\'d love to hear from you! Please fill out the form below, or continue on WhatsApp for a faster response.',
+            showForm: true,
+            suggestions: ['Continue on WhatsApp']
+          },
+          {
+            keywords: ['custard', 'dessert', 'kheer', 'jelly', 'sweet'],
+            text: 'Our dessert range includes Vanilla, Banana & Strawberry Custard (100g–250g), assorted Kheer blends (155g), and fruit Jelly in Blueberry, Mango & Banana flavors (80g packs).',
+            suggestions: ['Custard Details', 'Kheer Details', 'Rice', 'Contact Us']
+          },
+          {
+            keywords: ['spice', 'masala', 'papri'],
+            text: 'Our Masala Papri is a crispy, savory snack made with wheat flour and traditional spices — perfect for tea-time or chaat. Available in 250g packs.',
+            suggestions: ['View Products', 'Rice', 'Pink Salt', 'Contact Us']
+          },
+          {
+            keywords: ['where', 'country', 'location', 'pakistan', 'export', 'ship'],
+            text: 'KAFI Group is headquartered in Pakistan and exports to countries across Europe, North America, the Middle East, and Asia. We handle global logistics and shipping.',
+            suggestions: ['View Products', 'Contact Us', 'WhatsApp']
+          },
+          {
+            keywords: ['price', 'cost', 'rate', 'quotation', 'quote'],
+            text: 'For pricing and quotations, please contact our sales team. We offer competitive rates for bulk orders with flexible packaging options.',
+            showForm: true,
+            suggestions: ['Continue on WhatsApp', 'View Products']
+          }
+        ];
+
+        // Find best matching response
+        for (const r of responses) {
+          if (r.keywords.some(kw => lower.includes(kw))) {
+            return r;
+          }
+        }
+
+        // Default
+        return {
+          text: 'Thank you for your interest! I can help you with our product range including Himalayan Pink Salt, Rice, Spices, and Desserts. What would you like to know more about?',
+          suggestions: ['View Products', 'Rice', 'Pink Salt', 'Desserts', 'Contact Us']
+        };
+      }
+
+
+      // ── Sample Product Data (Fallback) ──────────────────────
+      getSampleProducts(category) {
+        const all = [
+          { name: 'Royal Super Parboiled Sella Rice', category: 'Rice', desc: 'Premium long-grain with rich golden texture', image: '', url: 'https://kafi-group.com' },
+          { name: 'Himalayan Pink Salt - Glass Grinder', category: 'Pink Salt', desc: 'Pure crystal salt in elegant glass grinder', image: '', url: 'https://kafi-group.com' },
+          { name: 'Ultra XXL Sella Gold Rice', category: 'Rice', desc: 'Extra-long grain, superior cooking performance', image: '', url: 'https://kafi-group.com' },
+          { name: 'Pink Salt Tiles & Blocks', category: 'Pink Salt', desc: 'For architectural and wellness applications', image: '', url: 'https://kafi-group.com' },
+          { name: 'Vanilla Custard', category: 'Desserts', desc: 'Rich and creamy vanilla dessert blend, 100g', image: '', url: 'https://kafi-group.com' },
+        ];
+
+        if (category === 'all') return all.slice(0, 3);
+        if (category === 'rice') return all.filter(p => p.category === 'Rice');
+        if (category === 'salt') return all.filter(p => p.category === 'Pink Salt');
+        return [];
+      }
+
+
+      // ── Render Response ─────────────────────────────────────
+      renderResponse(response) {
+        // Text message
+        if (response.text) {
+          this.addBotMessage(response.text);
+        }
+
+        // Product cards
+        if (response.products && response.products.length > 0) {
+          setTimeout(() => this.addProductCards(response.products), 200);
+        }
+
+        // Lead capture form
+        if (response.showForm) {
+          setTimeout(() => this.addLeadForm(), 300);
+        }
+
+        // Quick reply suggestions
+        if (response.suggestions && response.suggestions.length > 0) {
+          const delay = (response.products ? 400 : 0) + (response.showForm ? 500 : 200);
+          setTimeout(() => {
+            const suggestions = response.suggestions.map(s => {
+              if (s === 'Continue on WhatsApp' || s === 'WhatsApp') {
+                return { text: '💬 Continue on WhatsApp', value: '__whatsapp__' };
+              }
+              return typeof s === 'string' ? { text: s, value: s } : s;
+            });
+            this.addQuickReplies(suggestions);
+          }, delay);
+        }
+
+        // Log bot response
+        this.logMessage('bot', response.text || '');
+      }
+
+
+      // ── Add User Message ────────────────────────────────────
+      addUserMessage(text) {
+        this.messageCount++;
+        const time = this.formatTime();
+        const el = document.createElement('div');
+        el.className = 'kafi-message kafi-message--user';
+        el.setAttribute('role', 'article');
+        el.setAttribute('aria-label', `You said: ${text}`);
+        el.innerHTML = `
+          <div class="kafi-message-content">
+            <div class="kafi-message-bubble">${this.escapeHtml(text)}</div>
+            <span class="kafi-message-time">${time}</span>
+          </div>
+        `;
+        this.messages.appendChild(el);
+        this.scrollToBottom();
+      }
+
+
+      // ── Add Bot Message ─────────────────────────────────────
+      addBotMessage(text) {
+        this.messageCount++;
+        const time = this.formatTime();
+        const el = document.createElement('div');
+        el.className = 'kafi-message kafi-message--bot';
+        el.setAttribute('role', 'article');
+        el.setAttribute('aria-label', `KAFI Assistant said: ${text}`);
+        el.innerHTML = `
+          <div class="kafi-avatar" aria-hidden="true">K</div>
+          <div class="kafi-message-content">
+            <div class="kafi-message-bubble">${this.escapeHtml(text)}</div>
+            <span class="kafi-message-time">${time}</span>
+          </div>
+        `;
+        this.messages.appendChild(el);
+        this.scrollToBottom();
+      }
+
+
+      // ── Add Quick Replies ───────────────────────────────────
+      addQuickReplies(options) {
+        const container = document.createElement('div');
+        container.className = 'kafi-quick-replies';
+        container.setAttribute('role', 'group');
+        container.setAttribute('aria-label', 'Quick reply options');
+
+        for (const opt of options) {
+          const btn = document.createElement('button');
+          btn.className = 'kafi-quick-reply';
+          btn.type = 'button';
+          btn.textContent = opt.text;
+          btn.addEventListener('click', () => {
+            if (opt.value === '__whatsapp__') {
+              window.open(
+                'https://wa.me/923008206633?text=Hi%20KAFI%20Group%2C%20I%20was%20chatting%20on%20your%20website%20and%20would%20like%20to%20continue%20on%20WhatsApp.',
+                '_blank'
+              );
+              return;
+            }
+            this.input.value = opt.value;
+            this.handleSend();
+          });
+          container.appendChild(btn);
+        }
+
+        this.messages.appendChild(container);
+        this.scrollToBottom();
+      }
+
+      clearQuickReplies() {
+        const old = this.messages.querySelectorAll('.kafi-quick-replies');
+        old.forEach(el => el.remove());
+      }
+
+
+      // ── Add Product Cards ───────────────────────────────────
+      addProductCards(products) {
+        const container = document.createElement('div');
+        container.className = 'kafi-product-cards';
+
+        for (const p of products) {
+          const card = document.createElement('div');
+          card.className = 'kafi-product-card';
+          card.innerHTML = `
+            <div class="kafi-product-card-image">
+              ${p.image ? `<img src="${this.escapeHtml(p.image)}" alt="${this.escapeHtml(p.name)}" loading="lazy">` : `<span>📦 ${this.escapeHtml(p.category)}</span>`}
+            </div>
+            <div class="kafi-product-card-body">
+              <span class="kafi-product-card-category">${this.escapeHtml(p.category)}</span>
+              <div class="kafi-product-card-name">${this.escapeHtml(p.name)}</div>
+              ${p.desc ? `<div class="kafi-product-card-desc">${this.escapeHtml(p.desc)}</div>` : ''}
+              <a class="kafi-product-card-btn" href="${p.url || 'https://kafi-group.com'}" target="_blank" rel="noopener noreferrer">
+                View Product →
+              </a>
+            </div>
+          `;
+          container.appendChild(card);
+        }
+
+        this.messages.appendChild(container);
+        this.scrollToBottom();
+      }
+
+
+      // ── Add Lead Capture Form ───────────────────────────────
+      addLeadForm() {
+        // Only add one form at a time
+        if (this.messages.querySelector('.kafi-lead-form')) return;
+
+        const form = document.createElement('div');
+        form.className = 'kafi-lead-form';
+        form.innerHTML = `
+          <div class="kafi-lead-form-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a5e1a"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Contact Us
+          </div>
+          <div class="kafi-lead-form-subtitle">Fill in your details and our team will reach out within 24 hours.</div>
+          <form id="kafiLeadFormInner" autocomplete="on">
+            <div class="form-group">
+              <label>Full Name <span class="required">*</span></label>
+              <input type="text" name="fullName" required placeholder="Your full name" autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label>Email <span class="required">*</span></label>
+              <input type="email" name="email" required placeholder="your@email.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span class="required">*</span></label>
+              <input type="tel" name="phone" required placeholder="+92 300 1234567" autocomplete="tel">
+            </div>
+            <div class="form-group">
+              <label>Message</label>
+              <textarea name="message" placeholder="Tell us about your requirements..." rows="3"></textarea>
+            </div>
+            <button type="submit" class="kafi-lead-form-submit">Submit Inquiry →</button>
+          </form>
+        `;
+
+        this.messages.appendChild(form);
+        this.scrollToBottom();
+
+        // Handle form submit
+        const innerForm = form.querySelector('#kafiLeadFormInner');
+        innerForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const data = new FormData(innerForm);
+          const lead = {
+            name: data.get('fullName'),
+            email: data.get('email'),
+            phone: data.get('phone'),
+            message: data.get('message'),
+            sessionId: this.sessionId,
+            timestamp: new Date().toISOString(),
+          };
+
+          // Save to localStorage
+          const leads = JSON.parse(localStorage.getItem('kafi_leads') || '[]');
+          leads.push(lead);
+          localStorage.setItem('kafi_leads', JSON.stringify(leads));
+
+          // Mark lead captured in context manager to prevent form loop
+          if (this.conversation) {
+            this.conversation.markLeadCaptured();
+          }
+
+          // Show success
+          form.innerHTML = `
+            <div class="form-success">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#1a5e1a"/></svg>
+              <div style="font-family: Montserrat, sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px;">Thank you, ${this.escapeHtml(lead.name)}!</div>
+              <div>Our team will contact you shortly.</div>
+            </div>
+          `;
+
+          this.addBotMessage(`Thank you, ${lead.name}! Your inquiry has been received. Our sales team will reach out to you at ${lead.email} within 24 hours.`);
+          this.scrollToBottom();
+        });
+      }
+
+
+      // ── Typing Indicator ────────────────────────────────────
+      showTyping() {
+        if (this.messages.querySelector('.kafi-typing-indicator')) return;
+        const el = document.createElement('div');
+        el.className = 'kafi-typing-indicator';
+        el.setAttribute('aria-label', 'KAFI Assistant is typing');
+        el.innerHTML = `
+          <div class="kafi-avatar" aria-hidden="true">K</div>
+          <div class="kafi-typing-dots">
+            <span class="kafi-typing-dot"></span>
+            <span class="kafi-typing-dot"></span>
+            <span class="kafi-typing-dot"></span>
+          </div>
+        `;
+        this.messages.appendChild(el);
+        this.scrollToBottom();
+      }
+
+      hideTyping() {
+        const el = this.messages.querySelector('.kafi-typing-indicator');
+        if (el) el.remove();
+      }
+
+
+      // ── Language Toggle ─────────────────────────────────────
+      toggleLanguage() {
+        this.language = this.language === 'en' ? 'ur' : 'en';
+        this.langLabel.textContent = this.language.toUpperCase();
+
+        if (this.language === 'ur') {
+          this.input.placeholder = '...اپنا پیغام ٹائپ کریں';
+          this.input.dir = 'rtl';
+        } else {
+          this.input.placeholder = 'Type your message...';
+          this.input.dir = 'ltr';
+        }
+
+        this.addBotMessage(
+          this.language === 'ur'
+            ? 'زبان اردو میں تبدیل ہو گئی ہے۔ میں آپ کی کس طرح مدد کر سکتا ہوں؟'
+            : 'Language switched to English. How can I help you?'
+        );
+      }
+
+
+      // ── Conversation Logging ────────────────────────────────
+      logMessage(role, text) {
+        const log = JSON.parse(localStorage.getItem('kafi_conversations') || '{}');
+        if (!log[this.sessionId]) {
+          log[this.sessionId] = {
+            id: this.sessionId,
+            startedAt: new Date().toISOString(),
+            messages: [],
+            language: this.language,
+          };
+        }
+        log[this.sessionId].messages.push({
+          role,
+          text,
+          timestamp: new Date().toISOString(),
+        });
+        log[this.sessionId].lastActivity = new Date().toISOString();
+        localStorage.setItem('kafi_conversations', JSON.stringify(log));
+      }
+
+
+      // ── Utilities ───────────────────────────────────────────
+      formatTime() {
+        return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      }
+
+      escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      scrollToBottom() {
+        requestAnimationFrame(() => {
+          this.messages.scrollTop = this.messages.scrollHeight;
+        });
+      }
+
+      sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+
+
+    // ── Initialize ────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      window.kafiChat = new ChatApp();
+    });
+
+    // Fallback if DOM already loaded
+    if (document.readyState !== 'loading') {
+      window.kafiChat = new ChatApp();
+    }
+  </script>
+
+</body>
+</html>

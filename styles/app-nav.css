@@ -1,0 +1,110 @@
+/* KAFI AI Agents — unified top navigation */
+:root {
+  --kafi-nav-height: 48px;
+}
+
+.kafi-app-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100000;
+  height: var(--kafi-nav-height);
+  background: linear-gradient(90deg, #0f1419 0%, #1a2332 50%, #0f1419 100%);
+  border-bottom: 1px solid rgba(197, 153, 46, 0.35);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+.kafi-app-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 16px;
+}
+
+.kafi-app-nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #f5f0e6;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.kafi-app-nav-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #c5992e, #8b6914);
+  color: #0f1419;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.kafi-app-nav-label {
+  color: rgba(245, 240, 230, 0.55);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.kafi-app-nav-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.kafi-app-nav-select {
+  appearance: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(197, 153, 46, 0.4);
+  border-radius: 8px;
+  color: #f5f0e6;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 36px 8px 12px;
+  cursor: pointer;
+  min-width: 260px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23c5992e'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.kafi-app-nav-select:hover,
+.kafi-app-nav-select:focus {
+  border-color: #c5992e;
+  background-color: rgba(197, 153, 46, 0.1);
+  outline: none;
+}
+
+.kafi-app-nav-select option {
+  background: #1a2332;
+  color: #f5f0e6;
+}
+
+.kafi-app-nav-status {
+  font-size: 11px;
+  color: rgba(245, 240, 230, 0.45);
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .kafi-app-nav-status {
+    display: block;
+  }
+}
+
+body.kafi-has-nav {
+  padding-top: var(--kafi-nav-height) !important;
+}

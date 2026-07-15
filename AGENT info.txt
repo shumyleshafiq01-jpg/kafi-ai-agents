@@ -1,0 +1,35 @@
+AI AGENT 1
+
+International Sales AI Agent
+
+Responsibilities
+
+* Analyze buyer websites( Evaluate)
+* Web Scrapping
+* Analyze LinkedIn profiles (Designation, Nationality,  Date of Birth, Product Handling and Promotions)
+* Analyze social media
+* Analyze buyer history
+* Analyze previous emails
+* Classify leads (HOT / WARM / COLD)
+* Generate quotations
+* Generate email drafts
+* Schedule follow-ups
+* Generate multilingual replies
+* Auto birthday greetings
+* Auto national day greetings
+* Auto promotion congratulations
+* WhatsApp replies
+* Social Media DMS ( Targeted LinkedIn, Facebook, Instagram and cold for bots) 
+* Social media inquiry handling
+* Upselling recommendations
+* Cross-selling recommendations
+
+Training Data
+Kafi commodities website and social media, LinkedIn 
+
+* Export history
+* Buyer database
+* Historical quotations
+* Product specifications
+* Certifications
+* Previous correspondence

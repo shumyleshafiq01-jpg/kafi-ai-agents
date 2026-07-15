@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAFI AI Sourcing & Procurement Agent</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/sourcing.css">
+  <script src="engine/app-nav.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">S</div>
+      <div><b>Sourcing Agent</b><span>KAFI · Procurement</span></div>
+    </div>
+    <button class="nav-item active" data-panel="dashboard">📊 Dashboard</button>
+    <button class="nav-item" data-panel="linkedin">🔗 LinkedIn Import</button>
+    <button class="nav-item" data-panel="leads">📇 Lead Database</button>
+    <button class="nav-item" data-panel="discover">🌐 Web Discover</button>
+    <button class="nav-item" data-panel="outreach">✉️ Bulk Outreach</button>
+    <button class="nav-item" id="settingsNav" data-panel="settings">🔒 Settings</button>
+    <div style="flex:1"></div>
+    <div style="font-size:10px;color:rgba(255,255,255,0.35);padding:8px 12px">Agent: Sourcing & Procurement<br>© NeuroGrid Labs</div>
+  </aside>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <section class="panel active" id="panel-dashboard">
+      <div class="page-title">Sourcing Dashboard</div>
+      <div class="page-sub">Suppliers first · then buyers · from your LinkedIn network and web discovery.</div>
+      <div class="stat-grid" id="statGrid"></div>
+      <div class="card">
+        <h3>🚀 Quick start</h3>
+        <div class="steps">
+          <div class="step"><b>1. Export LinkedIn</b>Settings → Data privacy → Get a copy of your data → Connections → Request archive</div>
+          <div class="step"><b>2. Import CSV</b>Upload Connections.csv (or ZIP) in LinkedIn Import tab</div>
+          <div class="step"><b>3. Filter suppliers</b>Lead Database → Role: Supplier → score ≥ 70</div>
+          <div class="step"><b>4. Connect Outlook</b>Settings → Easy Connect (A) → sign in at microsoft.com/devicelogin</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKEDIN -->
+    <section class="panel" id="panel-linkedin">
+      <div class="page-title">LinkedIn Connections Import</div>
+      <div class="page-sub">Official LinkedIn export — no scraping. Merge multiple team members' connection files.</div>
+      <div class="card">
+        <h3>📥 Upload Connections.csv</h3>
+        <div class="dropzone" id="dropzone">
+          <input type="file" id="fileInput" accept=".csv,.zip" multiple>
+          <p><b>Drop Connections.csv or ZIP here</b></p>
+          <p style="color:var(--text-3);font-size:12px;margin-top:6px">From linkedin.com/mypreferences/d/download-my-data</p>
+          <button class="btn sm" style="margin-top:12px" onclick="document.getElementById('fileInput').click()">Browse files</button>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <label class="lbl" style="margin:0">Source label:</label>
+          <input class="inp" id="sourceLabel" style="width:220px" placeholder="e.g. Director LinkedIn" value="LinkedIn">
+        </div>
+        <div id="importPreview" style="margin-top:14px;font-size:13px;color:var(--text-2)"></div>
+      </div>
+      <div class="card">
+        <h3>How to export (desktop browser)</h3>
+        <p style="font-size:13px;color:var(--text-2);line-height:1.6">
+          1. Open <a href="https://www.linkedin.com/mypreferences/d/download-my-data" target="_blank" style="color:var(--accent-light)">linkedin.com/mypreferences/d/download-my-data</a><br>
+          2. Select <b>Connections</b> only → Request archive<br>
+          3. Check email (10–30 min) → download ZIP → upload here<br>
+          <span style="color:var(--text-3)">Email column is often empty — we enrich later via company website or Hunter/Apollo.</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- LEADS -->
+    <section class="panel" id="panel-leads">
+      <div class="page-title">Lead Database</div>
+      <div class="page-sub" id="leadsSub">Filter, enrich, and export your supplier and buyer contacts.</div>
+      <div class="filter-bar">
+        <div><label class="lbl">Search</label><input class="inp" id="fSearch" placeholder="name, company…" style="min-width:180px"></div>
+        <div><label class="lbl">Role</label>
+          <select class="sel" id="fRole"><option value="all">All</option><option value="supplier">Suppliers</option><option value="buyer">Buyers</option><option value="both">Both</option><option value="unknown">Unclassified</option></select>
+        </div>
+        <div><label class="lbl">Min score</label><select class="sel" id="fScore"><option value="0">Any</option><option value="50">50+</option><option value="70" selected>70+</option><option value="85">85+</option></select></div>
+        <div><label class="lbl">Region</label><select class="sel" id="fRegion"><option value="all">All</option><option value="middle east">Middle East</option><option value="europe">Europe</option><option value="north america">N. America</option><option value="asia pacific">Asia Pacific</option><option value="africa">Africa</option><option value="pakistan">Pakistan</option></select></div>
+        <div><label class="lbl">&nbsp;</label><label style="font-size:12px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="fExec"> Executives only</label></div>
+        <div><label class="lbl">&nbsp;</label><label style="font-size:12px;display:flex;align-items:center;gap:6px"><input type="checkbox" id="fEmail"> Has email</label></div>
+        <button class="btn sm ghost" id="exportBtn">⬇ Export CSV</button>
+        <button class="btn sm" id="enrichSelBtn">🔍 Enrich selected</button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden">
+        <div class="table-wrap" id="leadsTable"></div>
+      </div>
+    </section>
+
+    <!-- DISCOVER -->
+    <section class="panel" id="panel-discover">
+      <div class="page-title">Web Discover</div>
+      <div class="page-sub">Find new suppliers or buyers on the open web (blogs, listings, company sites).</div>
+      <div class="card">
+        <div class="two-col">
+          <div><label class="lbl">Product / keyword</label><input class="inp" id="discKeyword" placeholder="basmati rice, spice packaging, food importer"></div>
+          <div><label class="lbl">Intent</label>
+            <select class="sel" id="discIntent"><option value="supplier">Find suppliers</option><option value="buyer">Find buyers</option></select>
+          </div>
+          <div><label class="lbl">Region hint (optional)</label><input class="inp" id="discRegion" placeholder="UAE, Germany, USA"></div>
+          <div style="display:flex;align-items:flex-end"><button class="btn" id="discSearchBtn">Search web</button></div>
+        </div>
+        <div id="discStatus" style="margin-top:12px;font-size:12.5px;color:var(--text-2)"></div>
+      </div>
+      <div class="card"><h3>Results</h3><div class="table-wrap" id="discResults"></div></div>
+    </section>
+
+    <!-- OUTREACH -->
+    <section class="panel" id="panel-outreach">
+      <div class="page-title">Bulk Outreach (Outlook)</div>
+      <div class="page-sub">Send personalized emails from your company Microsoft 365 / Outlook mailbox.</div>
+      <div id="outlookBanner" class="outlook-status off">Outlook not connected — configure in Settings first.</div>
+      <div class="card">
+        <h3>✉️ Campaign</h3>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Use {{name}}, {{company}}, {{position}}, {{firstName}} in subject and body. Select leads in Lead Database first.</p>
+        <label class="lbl">Subject</label>
+        <input class="inp" id="emailSubject" value="Partnership inquiry — KAFI Group (Pakistan food exporter)">
+        <label class="lbl">Body (HTML allowed — line breaks become &lt;br&gt;)</label>
+        <textarea class="editor" id="emailBody">Dear {{name}},
+
+I hope this message finds you well. I am reaching out from KAFI Group (Kafi Commodities Pvt. Ltd.), a leading Pakistani exporter of Basmati rice, Himalayan pink salt, spices and vermicelli since 1982.
+
+We noticed your role at {{company}} and believe there may be a strong fit for {{position}}-level sourcing or distribution partnership.
+
+We offer bulk supply, private labeling, OEM and custom packaging from our Karachi factory (ISO 9001, ISO 22000, HACCP, HALAL).
+
+Would you be open to a brief call this week?
+
+Best regards,
+KAFI Group Exports
+exports@kafi-group.com | +92-300-8206633
+https://kafi-group.com</textarea>
+        <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn ghost sm" id="aiDraftBtn">🤖 AI personalize for selection</button>
+          <button class="btn gold" id="sendBulkBtn">📤 Send to selected (with email)</button>
+        </div>
+        <div class="progress" id="sendProgress" style="display:none"><div class="progress-bar" id="sendProgressBar" style="width:0%"></div></div>
+        <div id="sendLog" style="margin-top:10px;font-size:12px;color:var(--text-2);max-height:200px;overflow-y:auto"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="panel-settings">
+      <div class="page-title">Settings</div>
+      <div class="page-sub">Admin only · password: kafi2026</div>
+
+      <div class="card">
+        <h3>📧 Outlook — choose connection method</h3>
+        <div class="locked">
+          <b>Which Microsoft account for Azure signup?</b> Use your <b>company work email</b> (e.g. you@kafi-group.com) — NOT personal @outlook.com / @gmail.com.
+          You do <b>not</b> create a new account. Sign into Azure with the same login you use for company email. Personal Outlook cannot send from @kafi-group.com.
+        </div>
+
+        <div class="mode-tabs" style="display:flex;gap:8px;margin:14px 0;flex-wrap:wrap">
+          <button class="btn sm mode-tab active" data-mode="easy">A · Easy Connect</button>
+          <button class="btn sm ghost mode-tab" data-mode="azure">B · Full Azure</button>
+          <button class="btn sm ghost mode-tab" data-mode="smtp">C · SMTP / App password</button>
+        </div>
+
+        <!-- A: Easy Connect -->
+        <div id="modeEasy" class="mode-panel">
+          <p style="font-size:12.5px;color:var(--text-2);line-height:1.55;margin-bottom:12px">
+            <b>One-time IT setup (~10 min, then never again):</b><br>
+            1. Azure Portal → App registrations → New → name <code>KAFI Sourcing</code><br>
+            2. Supported accounts: <b>Single tenant</b> (your company only)<br>
+            3. Authentication → <b>Allow public client flows: Yes</b> (required for Easy Connect)<br>
+            4. API permissions → Microsoft Graph → <b>Mail.Send</b> + <b>User.Read</b> → Grant admin consent<br>
+            5. Copy <b>Client ID</b> + <b>Tenant ID</b> below — <b>no secret needed</b><br>
+            <span style="color:var(--text-3)">Daily use: click Connect → sign in at microsoft.com/devicelogin → done.</span>
+          </p>
+          <label class="lbl">Client ID (one-time)</label>
+          <input class="inp" id="easyClientId" placeholder="Application (client) ID from Azure">
+          <label class="lbl">Tenant ID (one-time)</label>
+          <input class="inp" id="easyTenantId" placeholder="Directory (tenant) ID from Azure">
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn sm" id="saveEasyCfg">Save</button>
+            <button class="btn sm gold" id="connectEasy">Connect with Microsoft</button>
+          </div>
+          <div id="deviceCodeBox" style="display:none;margin-top:14px;padding:14px;background:var(--bg-hover);border-radius:10px;font-size:13px">
+            <p>1. Open <a id="deviceLink" href="https://microsoft.com/devicelogin" target="_blank" style="color:var(--accent-light)">microsoft.com/devicelogin</a></p>
+            <p>2. Enter this code: <b id="deviceUserCode" style="font-size:18px;letter-spacing:2px"></b></p>
+            <p style="color:var(--text-3);font-size:12px">Waiting for sign-in…</p>
+          </div>
+        </div>
+
+        <!-- B: Full Azure -->
+        <div id="modeAzure" class="mode-panel" style="display:none">
+          <p style="font-size:12.5px;color:var(--text-2);margin-bottom:12px">Full OAuth with Client Secret + redirect. Use if Easy Connect is blocked by IT policy.</p>
+          <label class="lbl">Client ID</label><input class="inp" id="outClientId" placeholder="Application ID">
+          <label class="lbl">Client Secret</label><input class="inp" id="outClientSecret" type="password" autocomplete="off">
+          <label class="lbl">Tenant ID</label><input class="inp" id="outTenantId" placeholder="tenant-id">
+          <label class="lbl">Redirect URI</label><input class="inp" id="outRedirect" value="">
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn sm" id="saveOutlookCfg">Save</button>
+            <button class="btn sm gold" id="connectOutlook">Connect (browser redirect)</button>
+          </div>
+        </div>
+
+        <!-- C: SMTP -->
+        <div id="modeSmtp" class="mode-panel" style="display:none">
+          <p style="font-size:12.5px;color:var(--text-2);margin-bottom:12px">
+            Email + app password only. Works if your IT allows SMTP. Many Microsoft 365 tenants block this — try Easy Connect first.
+            Create app password: Microsoft account security → App passwords (if available).
+          </p>
+          <label class="lbl">SMTP host</label><input class="inp" id="smtpHost" value="smtp.office365.com">
+          <label class="lbl">Port</label><input class="inp" id="smtpPort" value="587" style="width:100px">
+          <label class="lbl">Company email</label><input class="inp" id="smtpEmail" placeholder="exports@kafi-group.com">
+          <label class="lbl">Password / app password</label><input class="inp" id="smtpPassword" type="password" autocomplete="off">
+          <label class="lbl">From name</label><input class="inp" id="smtpFromName" value="KAFI Group Exports">
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn sm" id="saveSmtpCfg">Save SMTP</button>
+            <button class="btn sm ghost" id="testSmtp">Test connection</button>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border)">
+          <button class="btn sm danger" id="disconnectOutlook">Disconnect / clear tokens</button>
+          <div id="outlookCfgStatus" style="margin-top:10px;font-size:12.5px;color:var(--text-2)"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🔍 Enrichment APIs (optional)</h3>
+        <p style="font-size:12px;color:var(--text-3);margin-bottom:10px">Use when LinkedIn export has no email. Apollo = people search. Hunter = domain emails. Start with Apollo free tier or Hunter free (25/mo).</p>
+        <div id="enrichRows"></div>
+        <button class="btn sm ghost" id="addEnrichBtn">+ Add provider</button>
+        <button class="btn sm" id="saveEnrichBtn" style="margin-left:8px">Save enrichment keys</button>
+      </div>
+
+      <div class="card">
+        <h3>🤖 AI provider (for email drafts)</h3>
+        <p style="font-size:12px;color:var(--text-3)">Same keys as Supply Chain agent — configure in Supply Chain Settings or add via /api/ai/config.</p>
+      </div>
+    </section>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import * as SA from './engine/sourcing-agent.js';
+import { WebScraper } from './engine/web-scraper.js';
+
+const $ = id => document.getElementById(id);
+const ADMIN = 'kafi2026';
+const adminHdr = () => ({ 'Content-Type': 'application/json', 'X-Admin-Password': ADMIN });
+let leads = SA.loadLeads();
+let selected = new Set();
+const scraper = new WebScraper();
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 3200);
+}
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
+function roleBadge(r) { return `<span class="badge ${r || 'unknown'}">${esc(r || 'unknown')}</span>`; }
+
+// ── Nav ──
+const SETTINGS_PW = ADMIN;
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.panel === 'settings' && sessionStorage.getItem('kafi_admin_auth') !== 'true') {
+      const pw = prompt('🔒 Settings — admin password:');
+      if (pw !== SETTINGS_PW) { if (pw !== null) toast('Access denied'); return; }
+      sessionStorage.setItem('kafi_admin_auth', 'true');
+      loadSettings();
+    }
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('panel-' + btn.dataset.panel).classList.add('active');
+    if (btn.dataset.panel === 'outreach') refreshOutlookBanner();
+  });
+});
+
+// Outlook callback query params
+const urlParams = new URLSearchParams(location.search);
+if (urlParams.get('outlook') === 'connected') {
+  toast('Outlook connected successfully!');
+  history.replaceState({}, '', location.pathname);
+  refreshOutlookBanner();
+} else if (urlParams.get('outlook') === 'error') {
+  toast('Outlook error: ' + (urlParams.get('msg') || 'unknown'));
+  history.replaceState({}, '', location.pathname);
+}
+
+// ── Dashboard ──
+function renderDashboard() {
+  const s = SA.leadStats(leads);
+  $('statGrid').innerHTML = `
+    <div class="stat"><div class="lbl">Total leads</div><div class="val">${s.total}</div></div>
+    <div class="stat"><div class="lbl">Suppliers</div><div class="val" style="color:var(--accent-light)">${s.suppliers}</div></div>
+    <div class="stat"><div class="lbl">Buyers</div><div class="val" style="color:#7fd67f">${s.buyers}</div></div>
+    <div class="stat"><div class="lbl">Executives</div><div class="val">${s.executives}</div></div>
+    <div class="stat"><div class="lbl">With email</div><div class="val">${s.withEmail}</div></div>
+    <div class="stat"><div class="lbl">High priority (70+)</div><div class="val">${s.highPriority}</div></div>`;
+}
+
+// ── LinkedIn import ──
+const dropzone = $('dropzone');
+const fileInput = $('fileInput');
+
+dropzone.addEventListener('dragover', e => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', e => { e.preventDefault(); dropzone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
+fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+async function handleFiles(fileList) {
+  const label = $('sourceLabel').value.trim() || 'LinkedIn';
+  let allRows = [];
+  for (const file of fileList) {
+    if (file.name.toLowerCase().endsWith('.zip')) {
+      if (typeof JSZip === 'undefined') { toast('ZIP support loading — try again or extract CSV first'); return; }
+      const zip = await JSZip.loadAsync(await file.arrayBuffer());
+      for (const [name, entry] of Object.entries(zip.files)) {
+        if (name.toLowerCase().includes('connection') && name.endsWith('.csv')) {
+          const text = await entry.async('string');
+          allRows = allRows.concat(SA.parseCSV(text));
+        }
+      }
+    } else if (file.name.toLowerCase().endsWith('.csv')) {
+      allRows = allRows.concat(SA.parseCSV(await file.text()));
+    }
+  }
+  if (!allRows.length) { toast('No Connections.csv found in upload'); return; }
+  const incoming = SA.linkedInRowsToLeads(allRows, label);
+  const { leads: merged, added, updated } = SA.mergeLeads(leads, incoming);
+  leads = merged;
+  SA.saveLeads(leads);
+  $('importPreview').innerHTML = `✅ Imported <b>${incoming.length}</b> rows → <b>${added}</b> new, <b>${updated}</b> updated. Total database: <b>${leads.length}</b>`;
+  toast(`LinkedIn import done: +${added} new contacts`);
+  renderAll();
+}
+
+// ── Leads table ──
+function getFilters() {
+  return {
+    search: $('fSearch').value.trim(),
+    roleType: $('fRole').value,
+    minScore: Number($('fScore').value),
+    region: $('fRegion').value,
+    executiveOnly: $('fExec').checked,
+    hasEmail: $('fEmail').checked,
+  };
+}
+
+function renderLeads() {
+  const filtered = SA.filterLeads(leads, getFilters());
+  $('leadsSub').textContent = `${filtered.length} of ${leads.length} leads shown`;
+  if (!filtered.length) {
+    $('leadsTable').innerHTML = '<p style="padding:20px;color:var(--text-3)">No leads — import LinkedIn Connections.csv first.</p>';
+    return;
+  }
+  $('leadsTable').innerHTML = `<table class="data"><thead><tr>
+    <th><input type="checkbox" id="selAll"></th><th>Name</th><th>Company</th><th>Position</th><th>Email</th><th>Role</th><th>Score</th><th>Source</th><th></th>
+  </tr></thead><tbody>` +
+    filtered.slice(0, 500).map(l => `<tr data-id="${esc(l.id)}">
+      <td><input type="checkbox" class="sel-row" data-id="${esc(l.id)}" ${selected.has(l.id)?'checked':''}></td>
+      <td><b>${esc(l.name)}</b>${l.isExecutive ? ' <span class="badge exec">EXEC</span>' : ''}</td>
+      <td>${esc(l.company)}</td>
+      <td style="max-width:160px">${esc(l.position)}</td>
+      <td>${l.email ? esc(l.email) : '<span style="color:var(--text-3)">—</span>'}</td>
+      <td>${roleBadge(l.roleType)}</td>
+      <td><b>${l.score}</b></td>
+      <td style="font-size:11px;color:var(--text-3)">${esc(l.source)}</td>
+      <td>${l.domain || l.companyUrl ? `<button class="btn sm ghost enrich-one" data-id="${esc(l.id)}">Enrich</button>` : ''}</td>
+    </tr>`).join('') + '</tbody></table>';
+
+  $('selAll').addEventListener('change', e => {
+    filtered.forEach(l => e.target.checked ? selected.add(l.id) : selected.delete(l.id));
+    renderLeads();
+  });
+  document.querySelectorAll('.sel-row').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) selected.add(cb.dataset.id); else selected.delete(cb.dataset.id);
+    });
+  });
+  document.querySelectorAll('.enrich-one').forEach(btn => {
+    btn.addEventListener('click', () => enrichLead(btn.dataset.id));
+  });
+}
+
+['fSearch','fRole','fScore','fRegion','fExec','fEmail'].forEach(id => {
+  $(id).addEventListener('input', renderLeads);
+  $(id).addEventListener('change', renderLeads);
+});
+
+$('exportBtn').addEventListener('click', () => {
+  const filtered = SA.filterLeads(leads, getFilters());
+  SA.downloadCSV(`kafi-leads-${Date.now()}.csv`, SA.exportLeadsCSV(filtered));
+  toast(`Exported ${filtered.length} leads`);
+});
+
+// ── Enrichment ──
+async function enrichLead(id) {
+  const lead = leads.find(l => l.id === id);
+  if (!lead) return;
+  let domain = lead.domain || '';
+  if (!domain && lead.companyUrl) {
+    try { domain = new URL(lead.companyUrl).hostname.replace('www.', ''); } catch {}
+  }
+  if (!domain && lead.company) {
+    domain = lead.company.toLowerCase().replace(/[^a-z0-9]/g, '') + '.com';
+  }
+  toast('Enriching ' + lead.name + '…');
+  try {
+    if (lead.firstName && lead.lastName && domain) {
+      const r = await fetch('/api/enrich/hunter', { method:'POST', headers:adminHdr(), body:JSON.stringify({
+        mode:'person', domain, firstName:lead.firstName, lastName:lead.lastName }) });
+      const d = await r.json();
+      if (d.email) { lead.email = d.email; lead.enriched = true; }
+    }
+    if (!lead.email && domain) {
+      const r = await fetch('/api/enrich/hunter', { method:'POST', headers:adminHdr(), body:JSON.stringify({ domain, limit:5 }) });
+      const d = await r.json();
+      const best = (d.emails || []).find(e => e.seniority === 'executive') || (d.emails || [])[0];
+      if (best?.email) { lead.email = best.email; lead.position = lead.position || best.position; lead.enriched = true; }
+    }
+    if (lead.companyUrl) {
+      const scraped = await scraper.scrapeUrl(lead.companyUrl);
+      if (scraped.emails?.length && !lead.email) lead.email = scraped.emails[0];
+      lead.phones = scraped.phones;
+      lead.enriched = true;
+    }
+    SA.saveLeads(leads);
+    renderLeads();
+    toast(lead.email ? 'Email found: ' + lead.email : 'No email found — try Apollo in Settings');
+  } catch (e) { toast('Enrich failed: ' + e.message); }
+}
+
+$('enrichSelBtn').addEventListener('click', async () => {
+  const ids = [...selected];
+  if (!ids.length) { toast('Select leads first'); return; }
+  for (let i = 0; i < Math.min(ids.length, 20); i++) {
+    await enrichLead(ids[i]);
+    await new Promise(r => setTimeout(r, 800));
+  }
+});
+
+// ── Web discover ──
+$('discSearchBtn').addEventListener('click', async () => {
+  const kw = $('discKeyword').value.trim();
+  const intent = $('discIntent').value;
+  const region = $('discRegion').value.trim();
+  if (!kw) { toast('Enter a keyword'); return; }
+  $('discStatus').textContent = 'Searching…';
+  const queries = WebScraper.generateQueries(kw, intent === 'buyer' ? 'clients' : 'competitors');
+  if (region) queries.push(`${kw} ${intent} ${region}`);
+  let all = [];
+  for (const q of queries.slice(0, 3)) {
+    try {
+      const res = await scraper.search(q, 15);
+      all = all.concat(res.results || []);
+    } catch (e) { console.warn(q, e); }
+  }
+  const seen = new Set();
+  const unique = all.filter(r => { const k = r.url; if (seen.has(k)) return false; seen.add(k); return true; });
+  $('discStatus').textContent = `Found ${unique.length} unique results`;
+  $('discResults').innerHTML = unique.length ? `<table class="data"><thead><tr><th>Title</th><th>Type</th><th>Country</th><th></th></tr></thead><tbody>` +
+    unique.map((r, i) => `<tr><td><a href="${esc(r.url)}" target="_blank" style="color:var(--accent-light)">${esc(r.title)}</a><br><span style="font-size:11px;color:var(--text-3)">${esc(r.snippet?.slice(0,100))}</span></td>
+      <td>${roleBadge(r.companyType === 'potential_client' ? 'buyer' : r.companyType === 'competitor' ? 'supplier' : intent)}</td>
+      <td>${esc(r.country)}</td>
+      <td><button class="btn sm add-disc" data-i="${i}">+ Add</button></td></tr>`).join('') + '</tbody></table>' : '<p style="color:var(--text-3)">No results</p>';
+
+  window._discCache = unique;
+  document.querySelectorAll('.add-disc').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = window._discCache[Number(btn.dataset.i)];
+      const lead = SA.searchResultToLead(item, intent);
+      const { leads: merged, added } = SA.mergeLeads(leads, [lead]);
+      leads = merged;
+      SA.saveLeads(leads);
+      toast(added ? 'Lead added' : 'Already in database');
+      renderAll();
+    });
+  });
+});
+
+// ── Outlook (3 modes) ──
+let currentOutlookMode = 'easy';
+let devicePollTimer = null;
+
+function showOutlookMode(mode) {
+  currentOutlookMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(b => {
+    b.classList.toggle('active', b.dataset.mode === mode);
+    b.classList.toggle('ghost', b.dataset.mode !== mode);
+  });
+  $('modeEasy').style.display = mode === 'easy' ? 'block' : 'none';
+  $('modeAzure').style.display = mode === 'azure' ? 'block' : 'none';
+  $('modeSmtp').style.display = mode === 'smtp' ? 'block' : 'none';
+}
+
+document.querySelectorAll('.mode-tab').forEach(btn => {
+  btn.addEventListener('click', () => showOutlookMode(btn.dataset.mode));
+});
+
+async function saveOutlookPayload(extra = {}) {
+  const body = {
+    mode: currentOutlookMode,
+    clientId: currentOutlookMode === 'easy' ? $('easyClientId').value.trim() : $('outClientId').value.trim(),
+    clientSecret: $('outClientSecret').value.trim(),
+    tenantId: currentOutlookMode === 'easy' ? $('easyTenantId').value.trim() : ($('outTenantId').value.trim() || 'common'),
+    redirectUri: $('outRedirect')?.value?.trim() || (window.location.origin + '/api/outlook/callback'),
+    smtp: {
+      host: $('smtpHost').value.trim(),
+      port: Number($('smtpPort').value) || 587,
+      email: $('smtpEmail').value.trim(),
+      password: $('smtpPassword').value.trim(),
+      fromName: $('smtpFromName').value.trim(),
+    },
+    ...extra,
+  };
+  const r = await fetch('/api/outlook/config', { method:'POST', headers:adminHdr(), body:JSON.stringify(body) });
+  return r.json();
+}
+
+$('saveEasyCfg').addEventListener('click', async () => {
+  showOutlookMode('easy');
+  const d = await saveOutlookPayload();
+  toast(d.ok ? 'Easy Connect config saved' : (d.error || 'Failed'));
+});
+
+$('saveOutlookCfg').addEventListener('click', async () => {
+  showOutlookMode('azure');
+  const d = await saveOutlookPayload();
+  toast(d.ok ? 'Azure config saved' : (d.error || 'Failed'));
+});
+
+$('saveSmtpCfg').addEventListener('click', async () => {
+  showOutlookMode('smtp');
+  const d = await saveOutlookPayload();
+  toast(d.ok ? 'SMTP config saved' : (d.error || 'Failed'));
+  refreshOutlookBanner();
+});
+
+$('testSmtp').addEventListener('click', async () => {
+  showOutlookMode('smtp');
+  await saveOutlookPayload();
+  const r = await fetch('/api/outlook/smtp/test', { method:'POST', headers:adminHdr(), body:'{}' });
+  const d = await r.json();
+  toast(d.ok ? 'SMTP connection OK' : ('SMTP failed: ' + (d.error || 'unknown')));
+});
+
+function stopDevicePoll() {
+  if (devicePollTimer) { clearInterval(devicePollTimer); devicePollTimer = null; }
+}
+
+async function pollDeviceOnce() {
+  const r = await fetch('/api/outlook/device/poll', { method:'POST', headers:adminHdr(), body:'{}' });
+  const d = await r.json();
+  if (d.connected) {
+    stopDevicePoll();
+    $('deviceCodeBox').style.display = 'none';
+    toast('Outlook connected!');
+    refreshOutlookBanner();
+    return true;
+  }
+  if (d.error) {
+    stopDevicePoll();
+    $('deviceCodeBox').style.display = 'none';
+    toast('Sign-in failed: ' + d.error);
+    return true;
+  }
+  return false;
+}
+
+$('connectEasy').addEventListener('click', async () => {
+  showOutlookMode('easy');
+  await saveOutlookPayload();
+  const r = await fetch('/api/outlook/device/start', { method:'POST', headers:adminHdr(), body:'{}' });
+  const d = await r.json();
+  if (!d.ok) { toast(d.error || 'Could not start sign-in'); return; }
+  $('deviceUserCode').textContent = d.user_code;
+  $('deviceLink').href = d.verification_uri || 'https://microsoft.com/devicelogin';
+  $('deviceCodeBox').style.display = 'block';
+  stopDevicePoll();
+  const interval = (d.interval || 5) * 1000;
+  devicePollTimer = setInterval(pollDeviceOnce, interval);
+  pollDeviceOnce();
+});
+
+async function refreshOutlookBanner() {
+  try {
+    const r = await fetch('/api/outlook/status');
+    const d = await r.json();
+    const el = $('outlookBanner');
+    if (d.connected) {
+      el.className = 'outlook-status ok';
+      const modeLabel = d.mode === 'smtp' ? 'SMTP' : d.mode === 'azure' ? 'Azure OAuth' : 'Easy Connect';
+      el.innerHTML = `✅ Connected via <b>${modeLabel}</b> as <b>${esc(d.email)}</b>${d.displayName ? ' (' + esc(d.displayName) + ')' : ''}`;
+    } else {
+      el.className = 'outlook-status off';
+      el.textContent = d.error || 'Outlook not connected — open Settings and use Easy Connect (A).';
+    }
+  } catch { $('outlookBanner').textContent = 'Server not reachable — is server.py running?'; }
+}
+
+$('connectOutlook').addEventListener('click', async () => {
+  showOutlookMode('azure');
+  await saveOutlookPayload();
+  const r = await fetch('/api/outlook/connect');
+  const d = await r.json();
+  if (d.authUrl) window.location.href = d.authUrl;
+  else toast(d.error || 'Configure Client ID first');
+});
+
+$('disconnectOutlook').addEventListener('click', async () => {
+  stopDevicePoll();
+  $('deviceCodeBox').style.display = 'none';
+  await fetch('/api/outlook/disconnect', { method:'POST', headers:adminHdr(), body:'{}' });
+  toast('Disconnected');
+  refreshOutlookBanner();
+});
+
+$('sendBulkBtn').addEventListener('click', async () => {
+  const recipients = leads.filter(l => selected.has(l.id) && l.email).map(l => ({
+    email: l.email, name: l.name, company: l.company, position: l.position,
+    firstName: l.firstName || l.name.split(' ')[0],
+  }));
+  if (!recipients.length) { toast('Select leads that have email addresses'); return; }
+  if (!confirm(`Send ${recipients.length} emails via Outlook?`)) return;
+  $('sendProgress').style.display = 'block';
+  $('sendLog').textContent = 'Sending…';
+  const r = await fetch('/api/outlook/send-bulk', { method:'POST', headers:adminHdr(), body:JSON.stringify({
+    recipients, subject: $('emailSubject').value, body: $('emailBody').value, delaySeconds: 2.5,
+  })});
+  const d = await r.json();
+  $('sendProgressBar').style.width = '100%';
+  if (d.ok) {
+    $('sendLog').innerHTML = `✅ Sent ${d.sent} / ${recipients.length}<br>` +
+      (d.results || []).filter(x => !x.ok).map(x => `❌ ${esc(x.email)}: ${esc(x.error)}`).join('<br>');
+    toast(`Bulk send complete: ${d.sent} sent`);
+  } else toast(d.error || 'Send failed');
+});
+
+$('aiDraftBtn').addEventListener('click', async () => {
+  const sel = leads.filter(l => selected.has(l.id)).slice(0, 1)[0];
+  if (!sel) { toast('Select one lead for AI draft'); return; }
+  toast('Generating AI draft…');
+  const r = await fetch('/api/ai/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({
+    system: SA.OUTREACH_SYSTEM,
+    messages: [{ role:'user', content: `Write a personalized outreach email to ${sel.name}, ${sel.position} at ${sel.company}. Role type: ${sel.roleType}. Keep under 150 words.` }],
+  })});
+  const d = await r.json();
+  if (d.text) { $('emailBody').value = d.text; toast('Draft inserted — review before sending'); }
+  else toast(d.error || 'AI not configured');
+});
+
+// ── Settings enrichment ──
+async function loadSettings() {
+  const r = await fetch('/api/enrich/config', { headers: adminHdr() });
+  if (r.ok) {
+    const cfg = await r.json();
+    $('enrichRows').innerHTML = '';
+    const rows = cfg.providers?.length ? cfg.providers : [{ provider:'hunter' }, { provider:'apollo' }];
+    rows.forEach(p => $('enrichRows').appendChild(enrichRow(p)));
+  }
+  const or = await fetch('/api/outlook/config', { headers: adminHdr() });
+  if (or.ok) {
+    const oc = await or.json();
+    showOutlookMode(oc.mode || 'easy');
+    $('easyClientId').value = oc.clientId || '';
+    $('easyTenantId').value = oc.tenantId || '';
+    $('outClientId').value = oc.clientId || '';
+    $('outClientSecret').value = oc.clientSecretMasked || '';
+    $('outTenantId').value = oc.tenantId || 'common';
+    if ($('outRedirect')) $('outRedirect').value = oc.redirectUri || (window.location.origin + '/api/outlook/callback');
+    if (oc.smtp) {
+      $('smtpHost').value = oc.smtp.host || 'smtp.office365.com';
+      $('smtpPort').value = oc.smtp.port || 587;
+      $('smtpEmail').value = oc.smtp.email || '';
+      $('smtpPassword').value = oc.smtp.passwordMasked || '';
+      $('smtpFromName').value = oc.smtp.fromName || 'KAFI Group Exports';
+    }
+  }
+  refreshOutlookBanner();
+}
+
+function enrichRow(p = {}) {
+  const div = document.createElement('div');
+  div.style.cssText = 'display:grid;grid-template-columns:120px 1fr auto;gap:10px;margin-bottom:8px;align-items:center';
+  div.innerHTML = `
+    <select class="sel er-prov"><option value="hunter" ${p.provider==='hunter'?'selected':''}>Hunter.io</option><option value="apollo" ${p.provider==='apollo'?'selected':''}>Apollo.io</option></select>
+    <input class="inp er-key" type="password" placeholder="API key" value="${esc(p.apiKeyMasked||'')}">
+    <button class="btn sm danger er-del">✕</button>`;
+  div.querySelector('.er-del').onclick = () => div.remove();
+  return div;
+}
+
+$('addEnrichBtn').onclick = () => $('enrichRows').appendChild(enrichRow());
+$('saveEnrichBtn').onclick = async () => {
+  const providers = [...$('enrichRows').children].map(row => ({
+    provider: row.querySelector('.er-prov').value,
+    apiKey: row.querySelector('.er-key').value.trim(),
+    enabled: true,
+  })).filter(p => p.apiKey);
+  const r = await fetch('/api/enrich/config', { method:'POST', headers:adminHdr(), body:JSON.stringify({ providers }) });
+  const d = await r.json();
+  toast(d.ok ? 'Enrichment keys saved' : (d.error || 'Failed'));
+  loadSettings();
+};
+
+function renderAll() { renderDashboard(); renderLeads(); }
+if ($('outRedirect') && !$('outRedirect').value) {
+  $('outRedirect').value = window.location.origin + '/api/outlook/callback';
+}
+renderAll();
+refreshOutlookBanner();
+if (sessionStorage.getItem('kafi_admin_auth') === 'true') loadSettings();
+
+console.log('%c[KAFI] Sourcing Agent ready', 'color:#2b7de9;font-weight:bold');
+</script>
+</body>
+</html>

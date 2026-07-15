@@ -1,0 +1,100 @@
+{
+  "faqs": [
+    {
+      "id": "faq-about",
+      "question": "What is Kafi Group?",
+      "questionUrdu": "کافی گروپ کیا ہے؟",
+      "answer": "Kafi Group (Kafi Commodities Pvt. Ltd.) is a premier manufacturer and exporter of food products from Pakistan, operating since 1982. Our in-house brand 'Essence' covers rice, Himalayan pink salt, spices, desserts, vermicelli, and more.",
+      "answerUrdu": "Kafi Group (Kafi Commodities Pvt. Ltd.) 1982 se Pakistan se food products ki manufacturing aur export kar raha hai. Hamara in-house brand 'Essence' hai.",
+      "category": "company"
+    },
+    {
+      "id": "faq-location",
+      "question": "Where is Kafi Group located?",
+      "questionUrdu": "کافی گروپ کہاں واقع ہے؟",
+      "answer": "Our head office is at Kafi House, F-50/1, Block-8, KDA Scheme-5, Clifton, Karachi, Pakistan. Our factory is located on Hub River Road, Karachi.",
+      "answerUrdu": "Hamara head office Clifton, Karachi mein hai aur factory Hub River Road, Karachi par hai.",
+      "category": "company"
+    },
+    {
+      "id": "faq-certifications",
+      "question": "What certifications does Kafi Group have?",
+      "questionUrdu": "کافی گروپ کے پاس کون سے سرٹیفیکیشنز ہیں؟",
+      "answer": "We are certified with ISO 9001 (Quality Management), ISO 22000 (Food Safety), HACCP (Hazard Analysis), and HALAL certification. We are also members of REAP (Rice Exporters Association of Pakistan).",
+      "answerUrdu": "Hamare paas ISO 9001, ISO 22000, HACCP aur HALAL certifications hain.",
+      "category": "company"
+    },
+    {
+      "id": "faq-export",
+      "question": "Which countries do you export to?",
+      "questionUrdu": "آپ کن ممالک کو برآمد کرتے ہیں؟",
+      "answer": "We export to the Middle East, Asia, Europe, North America (Canada & USA), Africa, and the Far East. We serve a diverse global clientele.",
+      "answerUrdu": "Hum Middle East, Asia, Europe, North America, Africa aur Far East ko export karte hain.",
+      "category": "shipping"
+    },
+    {
+      "id": "faq-order",
+      "question": "How do I place an order?",
+      "questionUrdu": "آرڈر کیسے دیں؟",
+      "answer": "You can place an order by contacting us via email at exports@kafi-group.com, calling +92-300-8206633, or reaching us on WhatsApp. We provide custom quotations based on your requirements.",
+      "answerUrdu": "Aap email (exports@kafi-group.com), phone (+92-300-8206633) ya WhatsApp ke zariye order de sakte hain. Hum aapki zaroorat ke mutabiq quotation dete hain.",
+      "category": "ordering"
+    },
+    {
+      "id": "faq-pricing",
+      "question": "What are your prices?",
+      "questionUrdu": "آپ کی قیمتیں کیا ہیں؟",
+      "answer": "As a B2B exporter, our pricing is customized based on order quantity, destination, and product specifications. Please contact our exports team at exports@kafi-group.com or WhatsApp +92-300-8206633 for a quotation.",
+      "answerUrdu": "Hamare rates order ki quantity aur destination ke mutabiq hote hain. Quotation ke liye exports@kafi-group.com par email karein ya WhatsApp karein.",
+      "category": "ordering"
+    },
+    {
+      "id": "faq-private-label",
+      "question": "Do you offer private labeling?",
+      "questionUrdu": "کیا آپ پرائیویٹ لیبلنگ کرتے ہیں؟",
+      "answer": "Yes! We offer comprehensive private labeling, OEM services, and contract manufacturing. You can have your own brand on our premium products. Contact us for details.",
+      "answerUrdu": "Ji haan! Hum private labeling, OEM services aur contract manufacturing offer karte hain.",
+      "category": "services"
+    },
+    {
+      "id": "faq-minimum-order",
+      "question": "What is the minimum order quantity?",
+      "questionUrdu": "کم سے کم آرڈر کتنا ہونا چاہیے؟",
+      "answer": "Minimum order quantities vary by product. Please contact our exports team for specific MOQ details for your desired products.",
+      "answerUrdu": "Minimum order har product ke liye alag hota hai. Hamare exports team se rabta karein.",
+      "category": "ordering"
+    },
+    {
+      "id": "faq-salt-origin",
+      "question": "Where does your pink salt come from?",
+      "questionUrdu": "آپ کا گلابی نمک کہاں سے آتا ہے؟",
+      "answer": "Our Himalayan Pink Salt is sourced directly from the Khewra Salt Mine in Pakistan — one of the oldest and largest salt mines in the world. It is 100% natural, unrefined, and free from bleaching agents or anti-caking additives.",
+      "answerUrdu": "Hamara Himalayan Pink Salt Pakistan ki Khewra Salt Mine se aata hai — duniya ki sab se purani aur bari salt mines mein se ek. 100% qudrati aur ghair processed.",
+      "category": "products"
+    },
+    {
+      "id": "faq-rice-origin",
+      "question": "Where does your rice come from?",
+      "questionUrdu": "آپ کا چاول کہاں سے آتا ہے؟",
+      "answer": "Our rice is sourced from premium paddy fields in the Punjab province of Pakistan, known for producing the finest Basmati rice in the world.",
+      "answerUrdu": "Hamara chawal Pakistan ke Punjab ke behtareen khet se aata hai, jo duniya ka sab se aala Basmati rice paida karta hai.",
+      "category": "products"
+    },
+    {
+      "id": "faq-shelf-life",
+      "question": "What is the shelf life of your products?",
+      "questionUrdu": "آپ کی مصنوعات کتنے دن چلتی ہیں؟",
+      "answer": "Shelf life varies by product: Custard and dessert mixes have a 12-month shelf life. Rice products have a longer shelf life when stored properly. Himalayan Pink Salt has an indefinite shelf life. Contact us for specific product shelf life details.",
+      "answerUrdu": "Shelf life har product ke liye alag hai: Custard aur dessert mixes 12 mahine. Chawal sahih storage se zyada chalta hai. Himalayan Pink Salt hamesha chalta hai.",
+      "category": "products"
+    },
+    {
+      "id": "faq-catalogue",
+      "question": "Do you have a product catalogue?",
+      "questionUrdu": "کیا آپ کے پاس کوئی کیٹلاگ ہے؟",
+      "answer": "Yes! You can view our complete Essence brand product catalogue online. We also have a detailed company profile PDF available for download.",
+      "answerUrdu": "Ji haan! Aap hamara Essence brand ka complete catalogue online dekh sakte hain.",
+      "category": "company"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "mode": "easy",
+  "clientId": "",
+  "clientSecret": "",
+  "tenantId": "common",
+  "redirectUri": "http://localhost:8000/api/outlook/callback",
+  "smtp": {
+    "host": "smtp.office365.com",
+    "port": 587,
+    "email": "",
+    "password": "",
+    "fromName": "KAFI Group Exports"
+  }
+}

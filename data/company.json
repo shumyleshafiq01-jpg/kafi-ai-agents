@@ -1,0 +1,97 @@
+{
+  "name": "Kafi Group",
+  "legalName": "Kafi Commodities (Pvt.) Limited",
+  "formerName": "Noble Impex",
+  "brand": "Essence",
+  "established": 1982,
+  "tagline": "Kafi Commodities: Sourcing Excellence Since 1982",
+  "website": "https://kafi-group.com",
+  "about": "Kafi Group is a premier manufacturer, exporter, and supplier of high-quality food products from Pakistan. Operating since 1982, we specialize in Basmati & Non-Basmati Rice, Himalayan Pink Salt, authentic spices, desserts, vermicelli, condiments, and wellness products. Our in-house brand 'Essence' represents our commitment to premium quality.",
+  "aboutUrdu": "کافی گروپ پاکستان سے اعلیٰ معیار کی خوراکی مصنوعات کی تیاری، برآمد اور فراہمی میں ایک سرکردہ ادارہ ہے۔ 1982 سے کام کر رہے ہیں۔",
+
+  "contact": {
+    "address": "Kafi House, F-50/1, Block-8, KDA Scheme-5, Clifton, Karachi, Pakistan",
+    "factory": "Hub River Road, Karachi, Pakistan",
+    "landline": ["+92-21-35864834", "+92-21-35864835"],
+    "cell": ["+92-300-8206633", "+92-321-8211829"],
+    "whatsapp": "+923008206633",
+    "email": {
+      "primary": "khalid.paracha@kafi-group.com",
+      "exports": "exports@kafi-group.com",
+      "general": "info@kafi-group.com",
+      "marketing": "marketing@kafi-group.com"
+    },
+    "crmEndpoint": "https://crm.kafi-group.com/lead-submit"
+  },
+
+  "certifications": [
+    {
+      "name": "ISO 9001",
+      "description": "Quality Management System",
+      "icon": "🏅"
+    },
+    {
+      "name": "ISO 22000",
+      "description": "Food Safety Management System",
+      "icon": "🛡️"
+    },
+    {
+      "name": "HACCP",
+      "description": "Hazard Analysis and Critical Control Points",
+      "icon": "✅"
+    },
+    {
+      "name": "HALAL",
+      "description": "Islamic dietary compliance certification",
+      "icon": "☪️"
+    }
+  ],
+
+  "memberships": [
+    "REAP — Rice Exporters Association of Pakistan"
+  ],
+
+  "services": [
+    "Contract Manufacturing",
+    "OEM Services",
+    "Private Labeling",
+    "Custom Packaging",
+    "Bulk Export"
+  ],
+
+  "exportMarkets": [
+    "Middle East",
+    "Asia",
+    "Europe",
+    "North America (Canada & United States)",
+    "Africa",
+    "Far East"
+  ],
+
+  "socialMedia": {
+    "facebook": "https://www.facebook.com/kafigroup",
+    "instagram": "https://www.instagram.com/kafigroup",
+    "linkedin": "https://www.linkedin.com/company/kafi-group",
+    "youtube": "https://www.youtube.com/@kafigroup"
+  },
+
+  "catalogue": "https://online.fliphtml5.com/Kafi-Essence/zfua/#p=1",
+  "companyProfile": "https://kafi-group.com/kafi-commodites-profile.pdf",
+
+  "sustainability": {
+    "description": "Kafi Group maintains rigorous quality and environmental standards through ISO 9001, ISO 22000, HACCP, and HALAL certifications. We source sustainably from local agricultural sectors, with our Himalayan Pink Salt extracted from the natural Khewra Salt Mine deposits.",
+    "commitments": [
+      "Sustainable sourcing from local Pakistani agricultural sectors",
+      "Environmentally responsible manufacturing processes",
+      "Natural, unrefined products free from artificial additives",
+      "Supporting local farming communities"
+    ]
+  },
+
+  "keyFacts": {
+    "saltOrigin": "Khewra Salt Mine, Pakistan — one of the oldest and largest salt mines in the world",
+    "riceOrigin": "Punjab province, Pakistan — premium paddy fields",
+    "pricing": "B2B export pricing — custom quotations per order. No fixed retail pricing on website.",
+    "ordering": "Contact via email, phone, or WhatsApp for quotations and orders."
+  }
+}

@@ -1,0 +1,1960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>KAFI Group — Admin Dashboard</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/admin.css">
+  <script src="engine/app-nav.js" defer></script>
+</head>
+<body class="admin-body">
+
+  <!-- ═══════════════════════════════════════════════════════════
+       KAFI AI AGENT — Admin Dashboard
+       © 2026 NeuroGrid Labs
+       ═══════════════════════════════════════════════════════════ -->
+
+  <!-- Mobile Toggle -->
+  <button class="admin-mobile-toggle" id="mobileToggle" type="button" aria-label="Toggle sidebar">
+    <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+  </button>
+
+  <!-- Sidebar Overlay (mobile) -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="admin-layout">
+
+    <!-- ── Sidebar ─────────────────────────────────────────── -->
+    <aside class="admin-sidebar" id="sidebar" role="navigation" aria-label="Admin navigation">
+      <div class="sidebar-logo">
+        <div class="sidebar-logo-icon" aria-hidden="true">K</div>
+        <div>
+          <div class="sidebar-logo-text">KAFI Group</div>
+          <div class="sidebar-logo-subtitle">Admin Panel</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-nav-label">Main</div>
+        <button class="sidebar-nav-item is-active" data-tab="dashboard" type="button">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          Dashboard
+        </button>
+        <button class="sidebar-nav-item" data-tab="conversations" type="button">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/></svg>
+          Conversations
+        </button>
+        <button class="sidebar-nav-item" data-tab="training" type="button">
+          <svg viewBox="0 0 24 24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+          Training
+        </button>
+        <button class="sidebar-nav-item" data-tab="products" type="button">
+          <svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/></svg>
+          Products
+        </button>
+        <button class="sidebar-nav-item" data-tab="sales" type="button">
+          <svg viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z" fill="currentColor"/></svg>
+          Sales Hub
+        </button>
+        <button class="sidebar-nav-item" data-tab="scraper" type="button">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/></svg>
+          Web Intel
+        </button>
+
+        <div class="sidebar-nav-label" style="margin-top: 16px;">System</div>
+        <button class="sidebar-nav-item" data-tab="settings" type="button">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58a.49.49 0 00.12-.61l-1.92-3.32a.488.488 0 00-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54a.484.484 0 00-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.07.62-.07.94s.02.64.07.94l-2.03 1.58a.49.49 0 00-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          Settings
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-footer-text">
+          Powered by <a href="#">NeuroGrid Labs</a>
+        </div>
+      </div>
+    </aside>
+
+
+    <!-- ── Main Content ────────────────────────────────────── -->
+    <main class="admin-main" id="adminMain">
+
+      <!-- Page Header -->
+      <div class="admin-page-header">
+        <div>
+          <h1 class="admin-page-title" id="pageTitle">Dashboard</h1>
+          <p class="admin-page-subtitle" id="pageSubtitle">Overview of your chatbot performance</p>
+        </div>
+        <div class="admin-page-actions" id="pageActions"></div>
+      </div>
+
+      <!-- Tab Panels -->
+      <!-- ═══ Dashboard ═══ -->
+      <div class="admin-tab-panel is-active" id="panel-dashboard">
+        <div class="stats-grid" id="statsGrid">
+          <!-- Rendered by analytics.js -->
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Recent Conversations</span>
+            </div>
+            <div class="admin-card-body" style="padding: 0;">
+              <div id="recentConversations" class="conversation-list">
+                <!-- Rendered by analytics.js -->
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Top Intents</span>
+            </div>
+            <div class="admin-card-body" id="intentChart">
+              <!-- Rendered by analytics.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Conversations ═══ -->
+      <div class="admin-tab-panel" id="panel-conversations">
+        <div class="admin-search">
+          <svg class="admin-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input class="admin-search-input" id="conversationSearch" type="text" placeholder="Search conversations..." aria-label="Search conversations">
+        </div>
+        <div class="admin-card">
+          <div class="admin-card-body" style="padding: 0;">
+            <div id="conversationLog" class="conversation-list">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Training ═══ -->
+      <div class="admin-tab-panel" id="panel-training">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Unrecognized Inputs</span>
+              <span class="admin-badge admin-badge--warning" id="unrecognizedCount">0 pending</span>
+            </div>
+            <div class="admin-card-body" style="padding: 0;">
+              <div id="unrecognizedInputs">
+                <!-- Rendered by trainer.js -->
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Add Custom Q&A</span>
+            </div>
+            <div class="admin-card-body" id="customQAForm">
+              <!-- Rendered by trainer.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Products ═══ -->
+      <div class="admin-tab-panel" id="panel-products">
+        <div style="margin-bottom: 24px;">
+          <button class="admin-btn admin-btn--primary" id="addProductBtn" type="button">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+            Add Product
+          </button>
+        </div>
+        <div class="product-grid" id="productGrid">
+          <!-- Rendered by trainer.js -->
+        </div>
+      </div>
+
+      <!-- ═══ Sales Hub ═══ -->
+      <div class="admin-tab-panel" id="panel-sales">
+        <!-- Sales Alerts -->
+        <div id="salesAlerts"></div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+          <!-- Lead Evaluator -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Lead Intelligence Evaluator</span>
+            </div>
+            <div class="admin-card-body">
+              <p class="settings-section-desc" style="margin-bottom: 12px;">Paste LinkedIn Profile copy, company website text, or email logs to analyze buyer designation, nationality, DOB, and product interests.</p>
+              <textarea class="admin-textarea" id="leadInputText" rows="6" placeholder="Paste LinkedIn copy, web text, or email history..."></textarea>
+              <button class="admin-btn admin-btn--primary" id="evaluateLeadBtn" type="button" style="margin-top: 12px;">
+                Evaluate Lead
+              </button>
+              
+              <!-- Evaluated Output -->
+              <div id="leadEvaluationResult" style="display: none; margin-top: 16px; padding: 16px; background: #151515; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);">
+                <!-- Filled dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- B2B Quotation Generator -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">B2B Export Quote Generator</span>
+            </div>
+            <div class="admin-card-body">
+              <p class="settings-section-desc" style="margin-bottom: 12px;">Generate a wholesale quote and upsell suggestions based on client category and location.</p>
+              <div style="font-size: 12px; color: #9ca3af; margin-bottom: 6px;">Select Products & Quantities:</div>
+              <div id="quoteProductSelector" style="max-height: 150px; overflow-y: auto; border: 1px solid #333; padding: 8px; border-radius: 4px; background: #1a1a1a; margin-bottom: 12px;">
+                <!-- Filled dynamically -->
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+                <label style="font-size: 12px; color: #9ca3af;">Link to Lead Profile:</label>
+                <select class="admin-select" id="quoteLeadSelect" style="flex: 1; padding: 6px;">
+                  <option value="">-- Select Lead --</option>
+                </select>
+              </div>
+              <button class="admin-btn admin-btn--gold" id="generateQuoteBtn" type="button">
+                Generate Quotation
+              </button>
+
+              <!-- Quote Output -->
+              <div id="quoteResult" style="display: none; margin-top: 16px; padding: 16px; background: #151515; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); max-height: 300px; overflow-y: auto;">
+                <!-- Filled dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+          <!-- Outreach Draft Generator -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Personalized Outreach Drafts</span>
+            </div>
+            <div class="admin-card-body">
+              <p class="settings-section-desc" style="margin-bottom: 12px;">Generate customized, synergetic pitches based on the lead's product interest and status.</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <label class="admin-label">Pitch Type</label>
+                  <select class="admin-select" id="outreachType" style="width: 100%;">
+                    <option value="email">Email Cold Pitch</option>
+                    <option value="linkedin">LinkedIn Connection</option>
+                    <option value="whatsapp">WhatsApp Introduction</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="admin-label">Language</label>
+                  <select class="admin-select" id="outreachLang" style="width: 100%;">
+                    <option value="english">English</option>
+                    <option value="urdu">Roman Urdu</option>
+                    <option value="arabic">Arabic</option>
+                  </select>
+                </div>
+              </div>
+              <button class="admin-btn admin-btn--primary" id="generateOutreachBtn" type="button">Generate Pitch</button>
+
+              <!-- Pitch Output -->
+              <div id="outreachResult" style="display: none; margin-top: 16px; position: relative;">
+                <textarea class="admin-textarea" id="outreachText" rows="6" readonly style="width: 100%; font-family: monospace; font-size: 13px; padding-right: 60px;"></textarea>
+                <button class="admin-btn admin-btn--ghost admin-btn--sm" id="copyOutreachBtn" type="button" style="position: absolute; right: 8px; top: 8px;">Copy</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Greetings Draft Generator -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Relations Greeting Generator</span>
+            </div>
+            <div class="admin-card-body">
+              <p class="settings-section-desc" style="margin-bottom: 12px;">Generate tailored birthday wishes, national day greetings, or promotion congratulations.</p>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                  <label class="admin-label">Greeting Type</label>
+                  <select class="admin-select" id="greetingTypeSelect" style="width: 100%;">
+                    <option value="birthday">Birthday Wish</option>
+                    <option value="national_day">National Day congratulations</option>
+                    <option value="promotion">Job Promotion congratulations</option>
+                  </select>
+                </div>
+                <div>
+                  <label style="opacity: 0; display: block; height: 16px; margin-bottom: 4px;">Placeholder</label>
+                  <span style="font-size: 12px; color: #9ca3af; display: block; margin-top: 8px;">Based on the selected lead's country and details.</span>
+                </div>
+              </div>
+              <button class="admin-btn admin-btn--gold" id="generateGreetingBtn" type="button">Generate Greeting</button>
+
+              <!-- Greeting Output -->
+              <div id="greetingResult" style="display: none; margin-top: 16px; position: relative;">
+                <textarea class="admin-textarea" id="greetingText" rows="6" readonly style="width: 100%; font-family: monospace; font-size: 13px; padding-right: 60px;"></textarea>
+                <button class="admin-btn admin-btn--ghost admin-btn--sm" id="copyGreetingBtn" type="button" style="position: absolute; right: 8px; top: 8px;">Copy</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CRM Lead Manager -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">B2B CRM Leads Directory</span>
+            <button class="admin-btn admin-btn--primary admin-btn--sm" id="addNewLeadBtn" type="button">
+              <svg viewBox="0 0 24 24" width="14" height="14" style="margin-right: 4px;"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" fill="currentColor"/></svg>
+              Add Lead Manually
+            </button>
+          </div>
+          <div class="admin-card-body" style="padding: 0;">
+            <div class="admin-table-container" style="overflow-x: auto;">
+              <table class="admin-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                <thead>
+                  <tr style="border-bottom: 1px solid #333; font-size: 12px; color: #9ca3af; background: #181818;">
+                    <th style="padding: 12px 16px;">Buyer Contact</th>
+                    <th style="padding: 12px 16px;">Company</th>
+                    <th style="padding: 12px 16px;">Designation</th>
+                    <th style="padding: 12px 16px;">Category / Products</th>
+                    <th style="padding: 12px 16px;">Nationality</th>
+                    <th style="padding: 12px 16px;">Score</th>
+                    <th style="padding: 12px 16px; text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="crmLeadsBody">
+                  <!-- Filled dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Web Intelligence Scraper ═══ -->
+      <div class="admin-tab-panel" id="panel-scraper">
+        <!-- Search Bar -->
+        <div class="admin-card" style="margin-bottom: 24px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Web Intelligence Search</span>
+          </div>
+          <div class="admin-card-body">
+            <p class="settings-section-desc" style="margin-bottom: 12px;">Search the web for competitors, potential clients, and market intelligence. Results are classified by company type and organized by country & continent.</p>
+            <div style="display: grid; grid-template-columns: 1fr auto auto; gap: 12px; align-items: end;">
+              <div>
+                <label class="admin-label">Search Keywords</label>
+                <input class="admin-input" id="scraperQuery" type="text" placeholder='e.g. "basmati rice importer UAE" or "himalayan salt wholesale Europe"'>
+              </div>
+              <div>
+                <label class="admin-label">Search Type</label>
+                <select class="admin-select" id="scraperType" style="width: 180px;">
+                  <option value="competitors">Find Competitors</option>
+                  <option value="clients">Find Potential Clients</option>
+                  <option value="market">Market Intelligence</option>
+                </select>
+              </div>
+              <button class="admin-btn admin-btn--primary" id="scraperSearchBtn" type="button" style="height: 40px;">Search Web</button>
+            </div>
+            <div id="scraperStatus" style="display: none; margin-top: 12px; padding: 10px; background: rgba(197,153,46,0.08); border-radius: 6px; font-size: 12px; color: var(--kafi-gold);"></div>
+          </div>
+        </div>
+
+        <!-- Search Results -->
+        <div id="scraperResultsContainer" style="display: none;">
+          <!-- Summary Stats -->
+          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;" id="scraperStats"></div>
+
+          <!-- Results Table -->
+          <div class="admin-card" style="margin-bottom: 24px;">
+            <div class="admin-card-header">
+              <span class="admin-card-title">Search Results</span>
+              <div style="display: flex; gap: 8px;">
+                <button class="admin-btn admin-btn--ghost admin-btn--sm scraper-filter-btn is-active" data-filter="all" type="button">All</button>
+                <button class="admin-btn admin-btn--ghost admin-btn--sm scraper-filter-btn" data-filter="competitor" type="button" style="color: var(--error);">Competitors</button>
+                <button class="admin-btn admin-btn--ghost admin-btn--sm scraper-filter-btn" data-filter="potential_client" type="button" style="color: var(--success);">Potential Clients</button>
+              </div>
+            </div>
+            <div class="admin-card-body" style="padding: 0;">
+              <div style="overflow-x: auto;">
+                <table class="admin-table" style="width: 100%; text-align: left; border-collapse: collapse;">
+                  <thead>
+                    <tr style="border-bottom: 1px solid #333; font-size: 12px; color: #9ca3af; background: #181818;">
+                      <th style="padding: 12px 16px; width: 30px;"></th>
+                      <th style="padding: 12px 16px;">Company / Title</th>
+                      <th style="padding: 12px 16px;">Country</th>
+                      <th style="padding: 12px 16px;">Continent</th>
+                      <th style="padding: 12px 16px;">Type</th>
+                      <th style="padding: 12px 16px; text-align: right;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="scraperResultsBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deep Scan Section -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Deep Website Analysis</span>
+          </div>
+          <div class="admin-card-body">
+            <p class="settings-section-desc" style="margin-bottom: 12px;">Paste a specific company URL to extract detailed business intelligence: emails, phone numbers, product overlap, certifications, and competitor/client classification.</p>
+            <div style="display: flex; gap: 12px; align-items: end;">
+              <div style="flex: 1;">
+                <label class="admin-label">Website URL</label>
+                <input class="admin-input" id="deepScanUrl" type="url" placeholder="https://example-company.com">
+              </div>
+              <button class="admin-btn admin-btn--gold" id="deepScanBtn" type="button" style="height: 40px;">Deep Scan</button>
+            </div>
+            <div id="deepScanResult" style="display: none; margin-top: 16px; padding: 16px; background: #151515; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ Settings ═══ -->
+      <div class="admin-tab-panel" id="panel-settings">
+        <!-- Bot Configuration -->
+        <div class="admin-card" style="margin-bottom: 24px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Bot Configuration</span>
+          </div>
+          <div class="admin-card-body">
+            <div class="settings-section">
+              <div class="settings-section-title">Bot Name</div>
+              <div class="settings-section-desc">The name displayed in the chat header</div>
+              <input class="admin-input" id="settingBotName" type="text" value="KAFI Assistant" placeholder="Bot name">
+            </div>
+            <div class="settings-section">
+              <div class="settings-section-title">Welcome Message</div>
+              <div class="settings-section-desc">First message shown when chat is opened</div>
+              <textarea class="admin-textarea" id="settingWelcome" rows="3" placeholder="Welcome message...">Assalam-o-Alaikum! Welcome to KAFI Group. How may I assist you with our premium products today?</textarea>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+              <button class="admin-btn admin-btn--primary" id="saveSettingsBtn" type="button">Save Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Provider Settings -->
+        <div class="admin-card api-settings-card" style="margin-bottom: 24px;">
+          <div class="admin-card-header">
+            <span class="admin-card-title">AI Provider Settings</span>
+            <span class="admin-badge admin-badge--info">Optional</span>
+          </div>
+          <div class="admin-card-body">
+            <p class="settings-section-desc" style="margin-bottom: 20px;">
+              The chatbot works without any API key using the local NLP engine. Add an API key to enable advanced AI responses for complex queries that fall outside the training data.
+            </p>
+
+            <div class="admin-form-group">
+              <label class="admin-label">AI Provider</label>
+              <select class="admin-select" id="apiProvider">
+                <option value="local">Local NLP (No API)</option>
+                <option value="openai">OpenAI GPT</option>
+                <option value="anthropic">Anthropic Claude</option>
+                <option value="gemini">Google Gemini</option>
+                <option value="manus">Manus AI</option>
+                <option value="cursor">Cursor AI</option>
+                <option value="custom">Custom API</option>
+              </select>
+            </div>
+
+            <div class="admin-form-group" id="apiKeyGroup" style="display: none;">
+              <label class="admin-label">API Key</label>
+              <div style="position: relative;">
+                <input class="admin-input" id="apiKey" type="password" placeholder="sk-... or your API key" autocomplete="off" style="padding-right: 48px;">
+                <button class="admin-btn admin-btn--ghost admin-btn--sm" id="toggleApiKey" type="button" style="position: absolute; right: 4px; top: 50%; transform: translateY(-50%); padding: 4px 8px; font-size: 11px;">Show</button>
+              </div>
+            </div>
+
+            <div class="admin-form-group" id="apiEndpointGroup" style="display: none;">
+              <label class="admin-label">API Endpoint URL</label>
+              <input class="admin-input" id="apiEndpoint" type="url" placeholder="https://api.example.com/v1/chat">
+            </div>
+
+            <div class="admin-form-group" id="apiModelGroup" style="display: none;">
+              <label class="admin-label">Model Name</label>
+              <input class="admin-input" id="apiModel" type="text" placeholder="e.g. gpt-4o, claude-sonnet-4-20250514, gemini-2.5-flash">
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="admin-btn admin-btn--gold" id="testApiBtn" type="button" style="display: none;">
+                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/></svg>
+                Test Connection
+              </button>
+              <button class="admin-btn admin-btn--primary" id="saveApiBtn" type="button">Save API Settings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <span class="admin-card-title">Data Management</span>
+          </div>
+          <div class="admin-card-body">
+            <div class="settings-section">
+              <div class="settings-section-title">Export Data</div>
+              <div class="settings-section-desc">Download conversation logs, leads, and training data as CSV files.</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="admin-btn admin-btn--ghost" id="exportConversations" type="button">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="currentColor"/></svg>
+                  Export Conversations
+                </button>
+                <button class="admin-btn admin-btn--ghost" id="exportLeads" type="button">
+                  <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" fill="currentColor"/></svg>
+                  Export Leads
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-section settings-danger-zone" style="margin-top: 24px;">
+              <div class="settings-section-title" style="color: #f87171;">⚠ Danger Zone</div>
+              <div class="settings-section-desc">These actions are irreversible. Data will be permanently deleted.</div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="admin-btn admin-btn--danger" id="clearConversations" type="button">Clear All Conversations</button>
+                <button class="admin-btn admin-btn--danger" id="clearLeads" type="button">Clear All Leads</button>
+                <button class="admin-btn admin-btn--danger" id="clearAll" type="button">Clear Everything</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════
+       ADMIN APPLICATION LOGIC
+       ═══════════════════════════════════════════════════════════ -->
+  <script type="module">
+    // ── Module Imports ───────────────────────────────────────
+    let LearningEngine;
+    try {
+      const mod = await import('./engine/learning-engine.js');
+      LearningEngine = mod.LearningEngine || mod.default;
+    } catch (e) { console.warn('[KAFI Admin] Learning engine not loaded:', e.message); }
+
+    let analyticsModule, trainerModule;
+    try {
+      analyticsModule = await import('./admin/analytics.js');
+    } catch (e) { console.warn('[KAFI Admin] Analytics module not loaded:', e.message); }
+
+    try {
+      trainerModule = await import('./admin/trainer.js');
+    } catch (e) { console.warn('[KAFI Admin] Trainer module not loaded:', e.message); }
+
+    let SalesAgent, APIConnector;
+    try {
+      const saMod = await import('./engine/sales-agent.js');
+      SalesAgent = saMod.SalesAgent || saMod.default;
+    } catch (e) { console.warn('[KAFI Admin] Sales agent module not loaded:', e.message); }
+
+    try {
+      const apiMod = await import('./engine/api-connector.js');
+      APIConnector = apiMod.APIConnector || apiMod.default;
+    } catch (e) { console.warn('[KAFI Admin] API connector not loaded:', e.message); }
+
+    let WebScraper;
+    try {
+      const wsMod = await import('./engine/web-scraper.js');
+      WebScraper = wsMod.WebScraper || wsMod.default;
+    } catch (e) { console.warn('[KAFI Admin] Web scraper module not loaded:', e.message); }
+
+
+    // ═══════════════════════════════════════════════════════════
+    //  AdminPanel — Main Admin Application
+    // ═══════════════════════════════════════════════════════════
+
+    class AdminPanel {
+      constructor() {
+        // Auth check
+        if (!this.authenticate()) return;
+
+        this.currentTab = 'dashboard';
+        this.learning = LearningEngine ? new LearningEngine() : null;
+        this.apiConnector = APIConnector ? new APIConnector() : null;
+        this.salesAgent = (SalesAgent && this.apiConnector) ? new SalesAgent(this.apiConnector) : null;
+        this.activeEvaluationResult = null; // Stash temporary lead evaluation result
+        this.webScraper = WebScraper ? new WebScraper() : null;
+        this.scraperResults = []; // Stash last search results for filtering
+
+        this.bindNavigation();
+        this.bindSettings();
+        this.bindApiSettings();
+        this.bindSalesEvents();
+        this.bindScraperEvents();
+        this.loadDashboard();
+
+        console.log('%c[KAFI Admin] Dashboard initialized', 'color: #c5992e; font-weight: bold;');
+      }
+
+
+      // ── Authentication ──────────────────────────────────────
+      authenticate() {
+        const stored = sessionStorage.getItem('kafi_admin_auth');
+        if (stored === 'true') return true;
+
+        const pw = prompt('🔒 KAFI Admin Panel\n\nEnter the admin password:');
+        if (pw === 'kafi2026') {
+          sessionStorage.setItem('kafi_admin_auth', 'true');
+          return true;
+        } else {
+          document.body.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:#f87171;font-family:Montserrat,sans-serif;font-size:18px;">
+              Access Denied. Incorrect password.
+            </div>`;
+          return false;
+        }
+      }
+
+
+      // ── Navigation ──────────────────────────────────────────
+      bindNavigation() {
+        const navItems = document.querySelectorAll('.sidebar-nav-item');
+        const panels = document.querySelectorAll('.admin-tab-panel');
+        const titles = {
+          dashboard: ['Dashboard', 'Overview of your chatbot performance'],
+          conversations: ['Conversations', 'View and search all chat sessions'],
+          training: ['Training', 'Teach the bot from unrecognized inputs'],
+          products: ['Products', 'Manage your product catalog'],
+          sales: ['Sales Hub', 'B2B Sales Intelligence, Quotation Engine & Outreach'],
+          scraper: ['Web Intel', 'Web Scraping, Competitor & Client Discovery'],
+          settings: ['Settings', 'Configure bot behavior and data'],
+        };
+
+        navItems.forEach(item => {
+          item.addEventListener('click', () => {
+            const tab = item.dataset.tab;
+            if (!tab) return;
+
+            // Update nav active state
+            navItems.forEach(n => n.classList.remove('is-active'));
+            item.classList.add('is-active');
+
+            // Show panel
+            panels.forEach(p => p.classList.remove('is-active'));
+            const panel = document.getElementById(`panel-${tab}`);
+            if (panel) panel.classList.add('is-active');
+
+            // Update header
+            const [title, subtitle] = titles[tab] || [tab, ''];
+            document.getElementById('pageTitle').textContent = title;
+            document.getElementById('pageSubtitle').textContent = subtitle;
+
+            this.currentTab = tab;
+            this.onTabChange(tab);
+
+            // Close mobile sidebar
+            document.getElementById('sidebar').classList.remove('is-open');
+            document.getElementById('sidebarOverlay').classList.remove('is-visible');
+          });
+        });
+
+        // Mobile sidebar toggle
+        document.getElementById('mobileToggle').addEventListener('click', () => {
+          document.getElementById('sidebar').classList.toggle('is-open');
+          document.getElementById('sidebarOverlay').classList.toggle('is-visible');
+        });
+
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+          document.getElementById('sidebar').classList.remove('is-open');
+          document.getElementById('sidebarOverlay').classList.remove('is-visible');
+        });
+      }
+
+
+      // ── Tab Change Handler ──────────────────────────────────
+      onTabChange(tab) {
+        switch (tab) {
+          case 'dashboard':    this.loadDashboard(); break;
+          case 'conversations': this.loadConversations(); break;
+          case 'training':     this.loadTraining(); break;
+          case 'products':     this.loadProducts(); break;
+          case 'sales':        this.loadSalesHub(); break;
+          case 'scraper':      break; // Static panel, no dynamic load needed
+          case 'settings':     this.loadSettings(); break;
+        }
+      }
+
+
+      // ── Dashboard ───────────────────────────────────────────
+      loadDashboard() {
+        const conversations = this.getConversations();
+        const analytics = this.computeAnalytics(conversations);
+
+        if (analyticsModule) {
+          analyticsModule.renderStats(document.getElementById('statsGrid'), analytics);
+          analyticsModule.renderRecentConversations(
+            document.getElementById('recentConversations'),
+            Object.values(conversations).slice(-10).reverse()
+          );
+          analyticsModule.renderIntentChart(
+            document.getElementById('intentChart'),
+            analytics.intents || {}
+          );
+        } else {
+          // Fallback inline rendering
+          this.renderStatsFallback(analytics);
+        }
+      }
+
+      computeAnalytics(conversations) {
+        const sessions = Object.values(conversations);
+        let totalMessages = 0;
+        let unrecognized = 0;
+        const intents = {};
+        const sessionDurations = [];
+
+        sessions.forEach(s => {
+          totalMessages += (s.messages || []).length;
+          (s.messages || []).forEach(m => {
+            if (m.intent === 'unknown') unrecognized++;
+            if (m.intent) {
+              intents[m.intent] = (intents[m.intent] || 0) + 1;
+            }
+          });
+          if (s.startedAt && s.lastActivity) {
+            sessionDurations.push(
+              (new Date(s.lastActivity) - new Date(s.startedAt)) / 1000
+            );
+          }
+        });
+
+        const avgSession = sessionDurations.length
+          ? Math.round(sessionDurations.reduce((a, b) => a + b, 0) / sessionDurations.length)
+          : 0;
+
+        return {
+          totalConversations: sessions.length,
+          totalMessages,
+          unrecognized,
+          avgSessionSec: avgSession,
+          intents,
+        };
+      }
+
+      renderStatsFallback(a) {
+        const grid = document.getElementById('statsGrid');
+        grid.innerHTML = `
+          <div class="stat-card stat-card--green">
+            <div class="stat-card-label">Total Conversations</div>
+            <div class="stat-card-value">${a.totalConversations}</div>
+          </div>
+          <div class="stat-card stat-card--gold">
+            <div class="stat-card-label">Total Messages</div>
+            <div class="stat-card-value">${a.totalMessages}</div>
+          </div>
+          <div class="stat-card stat-card--teal">
+            <div class="stat-card-label">Unrecognized</div>
+            <div class="stat-card-value">${a.unrecognized}</div>
+          </div>
+          <div class="stat-card stat-card--purple">
+            <div class="stat-card-label">Avg Session</div>
+            <div class="stat-card-value">${a.avgSessionSec}s</div>
+          </div>
+        `;
+      }
+
+
+      // ── Conversations ───────────────────────────────────────
+      loadConversations() {
+        const conversations = this.getConversations();
+        const container = document.getElementById('conversationLog');
+        const sessions = Object.values(conversations).reverse();
+
+        if (!sessions.length) {
+          container.innerHTML = `
+            <div class="admin-empty">
+              <div class="admin-empty-icon">💬</div>
+              <div class="admin-empty-title">No conversations yet</div>
+              <div class="admin-empty-text">Chat sessions will appear here as users interact with the bot.</div>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = '';
+        sessions.forEach((session, idx) => {
+          const msgs = session.messages || [];
+          const firstMsg = msgs.find(m => m.role === 'user')?.text || 'No message';
+          const initial = (firstMsg[0] || '?').toUpperCase();
+          const time = session.startedAt ? new Date(session.startedAt).toLocaleString() : 'Unknown';
+
+          // Session row
+          const row = document.createElement('div');
+          row.className = 'conversation-item';
+          row.innerHTML = `
+            <div class="conversation-avatar">${initial}</div>
+            <div class="conversation-info">
+              <div class="conversation-preview">${this.escapeHtml(firstMsg)}</div>
+              <div class="conversation-meta">
+                <span>${time}</span>
+                <span>${session.language || 'en'}</span>
+              </div>
+            </div>
+            <span class="conversation-messages-count">${msgs.length} msgs</span>
+          `;
+
+          // Thread (expandable)
+          const thread = document.createElement('div');
+          thread.className = 'conversation-thread';
+          thread.innerHTML = msgs.map(m => `
+            <div class="thread-message">
+              <span class="thread-message-role ${m.role}">${m.role}</span>
+              <span class="thread-message-text">${this.escapeHtml(m.text)}</span>
+            </div>
+          `).join('');
+
+          row.addEventListener('click', () => {
+            const isOpen = thread.classList.contains('is-visible');
+            // Close all threads
+            container.querySelectorAll('.conversation-thread').forEach(t => t.classList.remove('is-visible'));
+            container.querySelectorAll('.conversation-item').forEach(i => i.classList.remove('is-expanded'));
+
+            if (!isOpen) {
+              thread.classList.add('is-visible');
+              row.classList.add('is-expanded');
+            }
+          });
+
+          container.appendChild(row);
+          container.appendChild(thread);
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('conversationSearch');
+        searchInput.addEventListener('input', () => {
+          const q = searchInput.value.toLowerCase();
+          const items = container.querySelectorAll('.conversation-item');
+          const threads = container.querySelectorAll('.conversation-thread');
+
+          items.forEach((item, i) => {
+            const text = item.textContent.toLowerCase();
+            const threadText = threads[i] ? threads[i].textContent.toLowerCase() : '';
+            const match = text.includes(q) || threadText.includes(q);
+            item.style.display = match ? '' : 'none';
+            if (threads[i]) threads[i].style.display = match && threads[i].classList.contains('is-visible') ? '' : 'none';
+          });
+        });
+      }
+
+
+      // ── Training ────────────────────────────────────────────
+      loadTraining() {
+        const unrecognized = this.getUnrecognizedInputs();
+
+        // Update badge
+        document.getElementById('unrecognizedCount').textContent = `${unrecognized.length} pending`;
+
+        if (trainerModule) {
+          trainerModule.renderUnrecognizedInputs(
+            document.getElementById('unrecognizedInputs'),
+            unrecognized,
+            (input, intent) => this.teachInput(input, intent)
+          );
+          trainerModule.renderCustomQA(
+            document.getElementById('customQAForm'),
+            (pattern, response, intent) => this.addCustomQA(pattern, response, intent)
+          );
+        } else {
+          this.renderTrainingFallback(unrecognized);
+        }
+      }
+
+      renderTrainingFallback(unrecognized) {
+        const container = document.getElementById('unrecognizedInputs');
+        if (!unrecognized.length) {
+          container.innerHTML = `
+            <div class="admin-empty">
+              <div class="admin-empty-icon">🎓</div>
+              <div class="admin-empty-title">All caught up!</div>
+              <div class="admin-empty-text">No unrecognized inputs to train.</div>
+            </div>`;
+          return;
+        }
+
+        container.innerHTML = unrecognized.map((input, i) => `
+          <div class="training-item">
+            <span class="training-item-text">"${this.escapeHtml(input.text)}"</span>
+            <span class="training-item-count">${input.count || 1}×</span>
+            <div class="training-item-actions">
+              <button class="admin-btn admin-btn--gold admin-btn--sm" data-idx="${i}" type="button">Teach</button>
+            </div>
+          </div>
+        `).join('');
+
+        // Custom QA form
+        const qaForm = document.getElementById('customQAForm');
+        qaForm.innerHTML = `
+          <div class="admin-form-group">
+            <label class="admin-label">User Question Pattern</label>
+            <input class="admin-input" id="qaPattern" type="text" placeholder='e.g. "What is the price of pink salt?"'>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Bot Response</label>
+            <textarea class="admin-textarea" id="qaResponse" placeholder="The response the bot should give..."></textarea>
+          </div>
+          <div class="admin-form-group">
+            <label class="admin-label">Intent Category</label>
+            <select class="admin-select" id="qaIntent">
+              <option value="product_info">Product Info</option>
+              <option value="pricing">Pricing</option>
+              <option value="shipping">Shipping</option>
+              <option value="contact_request">Contact Request</option>
+              <option value="greeting">Greeting</option>
+              <option value="custom">Custom</option>
+            </select>
+          </div>
+          <button class="admin-btn admin-btn--primary" id="addQABtn" type="button">Add Q&A Pair</button>
+        `;
+
+        // Bind add QA
+        document.getElementById('addQABtn')?.addEventListener('click', () => {
+          const pattern = document.getElementById('qaPattern').value.trim();
+          const response = document.getElementById('qaResponse').value.trim();
+          const intent = document.getElementById('qaIntent').value;
+          if (pattern && response) {
+            this.addCustomQA(pattern, response, intent);
+            document.getElementById('qaPattern').value = '';
+            document.getElementById('qaResponse').value = '';
+            this.showToast('Q&A pair added successfully', 'success');
+          }
+        });
+      }
+
+      teachInput(input, intent) {
+        const customQA = JSON.parse(localStorage.getItem('kafi_custom_qa') || '[]');
+        customQA.push({ pattern: input.text, intent, trainedAt: new Date().toISOString() });
+        localStorage.setItem('kafi_custom_qa', JSON.stringify(customQA));
+
+        // Remove from unrecognized
+        const unrecognized = this.getUnrecognizedInputs().filter(u => u.text !== input.text);
+        localStorage.setItem('kafi_unrecognized', JSON.stringify(unrecognized));
+
+        this.loadTraining();
+        this.showToast('Input trained successfully', 'success');
+      }
+
+      addCustomQA(pattern, response, intent) {
+        const customQA = JSON.parse(localStorage.getItem('kafi_custom_qa') || '[]');
+        customQA.push({ pattern, response, intent, addedAt: new Date().toISOString() });
+        localStorage.setItem('kafi_custom_qa', JSON.stringify(customQA));
+      }
+
+
+      // ── Products ────────────────────────────────────────────
+      loadProducts() {
+        const products = this.getProducts();
+
+        if (trainerModule) {
+          trainerModule.renderProductEditor(
+            document.getElementById('productGrid'),
+            products,
+            (product) => this.saveProduct(product),
+            (idx) => this.deleteProduct(idx)
+          );
+        } else {
+          this.renderProductsFallback(products);
+        }
+
+        // Add product button
+        document.getElementById('addProductBtn').onclick = () => {
+          this.showProductModal(null, (product) => {
+            this.saveProduct(product);
+            this.loadProducts();
+            this.showToast('Product added successfully', 'success');
+          });
+        };
+      }
+
+      renderProductsFallback(products) {
+        const grid = document.getElementById('productGrid');
+        if (!products.length) {
+          grid.innerHTML = `
+            <div class="admin-empty" style="grid-column: 1/-1;">
+              <div class="admin-empty-icon">📦</div>
+              <div class="admin-empty-title">No products</div>
+              <div class="admin-empty-text">Add products to build the knowledge base.</div>
+            </div>`;
+          return;
+        }
+
+        grid.innerHTML = products.map((p, i) => `
+          <div class="product-editor-card">
+            <div class="product-editor-image">
+              ${p.image ? `<img src="${this.escapeHtml(p.image)}" alt="${this.escapeHtml(p.name)}">` : `📦 ${this.escapeHtml(p.category || 'Product')}`}
+            </div>
+            <div class="product-editor-body">
+              <div class="product-editor-name">${this.escapeHtml(p.name)}</div>
+              <div class="product-editor-category">${this.escapeHtml(p.category || 'Uncategorized')}</div>
+              <div class="product-editor-actions">
+                <button class="admin-btn admin-btn--ghost admin-btn--sm" onclick="window.adminPanel.editProduct(${i})" type="button">Edit</button>
+                <button class="admin-btn admin-btn--danger admin-btn--sm" onclick="window.adminPanel.deleteProduct(${i})" type="button">Delete</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      saveProduct(product) {
+        const products = this.getProducts();
+        if (product._index !== undefined) {
+          products[product._index] = { ...product };
+          delete products[product._index]._index;
+        } else {
+          products.push(product);
+        }
+        localStorage.setItem('kafi_products', JSON.stringify(products));
+      }
+
+      editProduct(idx) {
+        const products = this.getProducts();
+        const product = { ...products[idx], _index: idx };
+        this.showProductModal(product, (updated) => {
+          this.saveProduct({ ...updated, _index: idx });
+          this.loadProducts();
+          this.showToast('Product updated', 'success');
+        });
+      }
+
+      deleteProduct(idx) {
+        if (!confirm('Delete this product?')) return;
+        const products = this.getProducts();
+        products.splice(idx, 1);
+        localStorage.setItem('kafi_products', JSON.stringify(products));
+        this.loadProducts();
+        this.showToast('Product deleted', 'warning');
+      }
+
+      showProductModal(product, onSave) {
+        const overlay = document.createElement('div');
+        overlay.className = 'teach-modal-overlay';
+        overlay.innerHTML = `
+          <div class="teach-modal">
+            <div class="teach-modal-title">${product ? 'Edit Product' : 'Add Product'}</div>
+            <div class="admin-form-group">
+              <label class="admin-label">Product Name</label>
+              <input class="admin-input" id="modalProductName" type="text" value="${this.escapeHtml(product?.name || '')}" placeholder="Product name">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Category</label>
+              <select class="admin-select" id="modalProductCategory">
+                <option value="Rice" ${product?.category === 'Rice' ? 'selected' : ''}>Rice</option>
+                <option value="Pink Salt" ${product?.category === 'Pink Salt' ? 'selected' : ''}>Pink Salt</option>
+                <option value="Sea Salt" ${product?.category === 'Sea Salt' ? 'selected' : ''}>Sea Salt</option>
+                <option value="Spices" ${product?.category === 'Spices' ? 'selected' : ''}>Spices</option>
+                <option value="Desserts" ${product?.category === 'Desserts' ? 'selected' : ''}>Desserts</option>
+                <option value="Other" ${product?.category === 'Other' ? 'selected' : ''}>Other</option>
+              </select>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Description</label>
+              <textarea class="admin-textarea" id="modalProductDesc" rows="2" placeholder="Product description">${this.escapeHtml(product?.desc || product?.description || '')}</textarea>
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Image URL</label>
+              <input class="admin-input" id="modalProductImage" type="url" value="${this.escapeHtml(product?.image || '')}" placeholder="https://...">
+            </div>
+            <div class="admin-form-group">
+              <label class="admin-label">Product URL</label>
+              <input class="admin-input" id="modalProductUrl" type="url" value="${this.escapeHtml(product?.url || '')}" placeholder="https://kafi-group.com/product/...">
+            </div>
+            <div style="display: flex; gap: 8px; justify-content: flex-end;">
+              <button class="admin-btn admin-btn--ghost" id="modalCancel" type="button">Cancel</button>
+              <button class="admin-btn admin-btn--primary" id="modalSave" type="button">Save Product</button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        overlay.querySelector('#modalCancel').addEventListener('click', () => overlay.remove());
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+
+        overlay.querySelector('#modalSave').addEventListener('click', () => {
+          const newProduct = {
+            name: document.getElementById('modalProductName').value.trim(),
+            category: document.getElementById('modalProductCategory').value,
+            desc: document.getElementById('modalProductDesc').value.trim(),
+            image: document.getElementById('modalProductImage').value.trim(),
+            url: document.getElementById('modalProductUrl').value.trim() || 'https://kafi-group.com',
+          };
+          if (!newProduct.name) { alert('Product name is required.'); return; }
+          onSave(newProduct);
+          overlay.remove();
+        });
+      }
+
+
+      // ── Web Intelligence Scraper ──────────────────────────
+      bindScraperEvents() {
+        const searchBtn = document.getElementById('scraperSearchBtn');
+        const deepScanBtn = document.getElementById('deepScanBtn');
+        const queryInput = document.getElementById('scraperQuery');
+
+        if (!searchBtn || !deepScanBtn) return;
+
+        // Search Web
+        searchBtn.addEventListener('click', () => this._runScraperSearch());
+
+        // Enter key on search input
+        queryInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') this._runScraperSearch();
+        });
+
+        // Deep Scan
+        deepScanBtn.addEventListener('click', () => this._runDeepScan());
+
+        // Filter buttons
+        document.querySelectorAll('.scraper-filter-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.scraper-filter-btn').forEach(b => b.classList.remove('is-active'));
+            btn.classList.add('is-active');
+            const filter = btn.dataset.filter;
+            this._filterScraperResults(filter);
+          });
+        });
+      }
+
+      async _runScraperSearch() {
+        if (!this.webScraper) {
+          this.showToast('Web Scraper not loaded — make sure server.py is running', 'error');
+          return;
+        }
+
+        const query = document.getElementById('scraperQuery').value.trim();
+        if (!query) {
+          this.showToast('Please enter search keywords', 'warning');
+          return;
+        }
+
+        const statusEl = document.getElementById('scraperStatus');
+        const searchBtn = document.getElementById('scraperSearchBtn');
+
+        statusEl.style.display = 'block';
+        statusEl.innerHTML = '<span class="loading-dots">Searching the web</span>';
+        searchBtn.disabled = true;
+        searchBtn.textContent = 'Searching...';
+
+        try {
+          const data = await this.webScraper.search(query, 20);
+          this.scraperResults = data.results || [];
+          this._renderScraperResults(this.scraperResults);
+          statusEl.innerHTML = `✓ Found ${data.count} results for "<strong>${query}</strong>"`;
+          this.showToast(`Found ${data.count} results`, 'success');
+        } catch (err) {
+          statusEl.innerHTML = `✗ Error: ${err.message}`;
+          this.showToast('Search failed: ' + err.message, 'error');
+        } finally {
+          searchBtn.disabled = false;
+          searchBtn.textContent = 'Search Web';
+        }
+      }
+
+      _renderScraperResults(results) {
+        const container = document.getElementById('scraperResultsContainer');
+        const tbody = document.getElementById('scraperResultsBody');
+        const statsEl = document.getElementById('scraperStats');
+        container.style.display = 'block';
+
+        // Calculate stats
+        const total = results.length;
+        const competitors = results.filter(r => r.companyType === 'competitor').length;
+        const clients = results.filter(r => r.companyType === 'potential_client').length;
+        const countries = new Set(results.map(r => r.country).filter(c => c !== 'Unknown')).size;
+
+        statsEl.innerHTML = `
+          <div class="stat-card" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05);">
+            <div style="font-size: 24px; font-weight: 700; color: #e8e8e8;">${total}</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Total Results</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #2d1a1a 0%, #3e1616 100%); padding: 16px; border-radius: 10px; border: 1px solid rgba(255,100,100,0.1);">
+            <div style="font-size: 24px; font-weight: 700; color: #ef4444;">${competitors}</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Competitors</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #1a2d1a 0%, #163e16 100%); padding: 16px; border-radius: 10px; border: 1px solid rgba(100,255,100,0.1);">
+            <div style="font-size: 24px; font-weight: 700; color: #22c55e;">${clients}</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Potential Clients</div>
+          </div>
+          <div class="stat-card" style="background: linear-gradient(135deg, #1a1a2e 0%, #2e1a3e 100%); padding: 16px; border-radius: 10px; border: 1px solid rgba(150,100,255,0.1);">
+            <div style="font-size: 24px; font-weight: 700; color: #a78bfa;">${countries}</div>
+            <div style="font-size: 11px; color: #9ca3af; margin-top: 4px;">Countries</div>
+          </div>
+        `;
+
+        this._renderScraperRows(results, tbody);
+      }
+
+      _renderScraperRows(results, tbody) {
+        if (!tbody) tbody = document.getElementById('scraperResultsBody');
+
+        tbody.innerHTML = results.map((r, i) => {
+          const typeColors = {
+            competitor: { bg: 'rgba(239,68,68,0.1)', text: '#ef4444', label: '⚔ Competitor' },
+            potential_client: { bg: 'rgba(34,197,94,0.1)', text: '#22c55e', label: '🤝 Potential Client' },
+            unknown: { bg: 'rgba(156,163,175,0.1)', text: '#9ca3af', label: '— Unknown' },
+          };
+          const type = typeColors[r.companyType] || typeColors.unknown;
+          const truncatedTitle = (r.title || r.domain || 'Untitled').substring(0, 60);
+          const snippet = (r.snippet || '').substring(0, 100);
+
+          return `
+            <tr class="scraper-row" data-type="${r.companyType}" style="border-bottom: 1px solid #222; transition: background 0.2s;" onmouseover="this.style.background='#1a1a1a'" onmouseout="this.style.background='transparent'">
+              <td style="padding: 12px 16px; font-size: 13px; color: #666;">${i + 1}</td>
+              <td style="padding: 12px 16px;">
+                <div style="font-size: 13px; font-weight: 500; color: #e8e8e8; margin-bottom: 2px;">${truncatedTitle}</div>
+                <div style="font-size: 11px; color: #666;">${snippet}</div>
+                <div style="font-size: 10px; color: #555; margin-top: 2px;">${r.domain || ''}</div>
+              </td>
+              <td style="padding: 12px 16px; font-size: 12px; color: #9ca3af;">${r.country}</td>
+              <td style="padding: 12px 16px; font-size: 12px; color: #9ca3af;">${r.continent}</td>
+              <td style="padding: 12px 16px;">
+                <span style="display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 11px; background: ${type.bg}; color: ${type.text}; font-weight: 500;">${type.label}</span>
+              </td>
+              <td style="padding: 12px 16px; text-align: right;">
+                <button class="admin-btn admin-btn--ghost admin-btn--sm scraper-scan-btn" data-url="${r.url}" type="button" style="font-size: 11px; padding: 4px 10px;">Deep Scan</button>
+                <a href="${r.url}" target="_blank" rel="noopener" style="display: inline-block; margin-left: 6px; padding: 4px 10px; font-size: 11px; color: var(--kafi-gold); text-decoration: none; border: 1px solid rgba(197,153,46,0.3); border-radius: 4px;">Visit ↗</a>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Bind deep scan buttons inside table
+        tbody.querySelectorAll('.scraper-scan-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.getElementById('deepScanUrl').value = btn.dataset.url;
+            this._runDeepScan();
+          });
+        });
+      }
+
+      _filterScraperResults(filter) {
+        const filtered = filter === 'all'
+          ? this.scraperResults
+          : this.scraperResults.filter(r => r.companyType === filter);
+        this._renderScraperRows(filtered);
+      }
+
+      async _runDeepScan() {
+        if (!this.webScraper) {
+          this.showToast('Web Scraper not loaded — make sure server.py is running', 'error');
+          return;
+        }
+
+        const url = document.getElementById('deepScanUrl').value.trim();
+        if (!url) {
+          this.showToast('Please enter a URL to analyze', 'warning');
+          return;
+        }
+
+        const resultEl = document.getElementById('deepScanResult');
+        const deepBtn = document.getElementById('deepScanBtn');
+        resultEl.style.display = 'block';
+        resultEl.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--kafi-gold);">Analyzing website... This may take a few seconds.</div>';
+        deepBtn.disabled = true;
+        deepBtn.textContent = 'Scanning...';
+
+        try {
+          const data = await this.webScraper.scrapeUrl(url);
+
+          if (!data.success) {
+            resultEl.innerHTML = `<div style="color: var(--error); padding: 12px;">✗ Failed to scan: ${data.error}</div>`;
+            return;
+          }
+
+          const typeColors = {
+            competitor: { bg: 'rgba(239,68,68,0.12)', text: '#ef4444', label: '⚔ Competitor' },
+            potential_client: { bg: 'rgba(34,197,94,0.12)', text: '#22c55e', label: '🤝 Potential Client' },
+            unknown: { bg: 'rgba(156,163,175,0.12)', text: '#9ca3af', label: 'Unclassified' },
+          };
+          const type = typeColors[data.companyType] || typeColors.unknown;
+
+          resultEl.innerHTML = `
+            <div style="display: grid; gap: 16px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 16px; color: #e8e8e8;">${data.title || 'No title found'}</h3>
+                <span style="padding: 4px 14px; border-radius: 14px; font-size: 12px; background: ${type.bg}; color: ${type.text}; font-weight: 600;">${type.label}</span>
+              </div>
+              <p style="margin: 0; font-size: 13px; color: #9ca3af; line-height: 1.5;">${data.description || 'No description found'}</p>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+                <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                  <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Country</div>
+                  <div style="font-size: 14px; color: #e8e8e8; font-weight: 500;">${data.country}</div>
+                </div>
+                <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                  <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Continent</div>
+                  <div style="font-size: 14px; color: #e8e8e8; font-weight: 500;">${data.continent}</div>
+                </div>
+                <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                  <div style="font-size: 11px; color: #666; margin-bottom: 4px;">Product Overlap</div>
+                  <div style="font-size: 14px; color: #e8e8e8; font-weight: 500;">${data.products.length > 0 ? data.products.join(', ') : 'None detected'}</div>
+                </div>
+              </div>
+              ${data.emails.length > 0 ? `
+              <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                <div style="font-size: 11px; color: #666; margin-bottom: 6px;">📧 Emails Found</div>
+                <div style="font-size: 13px; color: var(--kafi-gold);">${data.emails.map(e => `<a href="mailto:${e}" style="color: var(--kafi-gold); text-decoration: none; margin-right: 12px;">${e}</a>`).join('')}</div>
+              </div>` : ''}
+              ${data.phones.length > 0 ? `
+              <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                <div style="font-size: 11px; color: #666; margin-bottom: 6px;">📞 Phone Numbers Found</div>
+                <div style="font-size: 13px; color: #e8e8e8;">${data.phones.join(' &nbsp;|&nbsp; ')}</div>
+              </div>` : ''}
+              ${data.certifications.length > 0 ? `
+              <div style="background: #1a1a1a; padding: 12px; border-radius: 8px;">
+                <div style="font-size: 11px; color: #666; margin-bottom: 6px;">🏆 Certifications</div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap;">${data.certifications.map(c => `<span style="padding: 2px 8px; border-radius: 4px; font-size: 11px; background: rgba(197,153,46,0.1); color: var(--kafi-gold);">${c}</span>`).join('')}</div>
+              </div>` : ''}
+              <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                <button class="admin-btn admin-btn--ghost admin-btn--sm" onclick="navigator.clipboard.writeText(JSON.stringify(${JSON.stringify(data).replace(/"/g, '&quot;')}, null, 2)); window.adminPanel.showToast('Copied to clipboard', 'success');" type="button">Copy JSON</button>
+                <a href="${url}" target="_blank" rel="noopener" class="admin-btn admin-btn--gold admin-btn--sm" style="text-decoration: none;">Visit Website ↗</a>
+              </div>
+            </div>
+          `;
+
+          this.showToast('Deep scan complete', 'success');
+        } catch (err) {
+          resultEl.innerHTML = `<div style="color: var(--error); padding: 12px;">✗ Error: ${err.message}</div>`;
+          this.showToast('Deep scan failed: ' + err.message, 'error');
+        } finally {
+          deepBtn.disabled = false;
+          deepBtn.textContent = 'Deep Scan';
+        }
+      }
+
+
+      // ── Sales Hub Dashboard ────────────────────────────────
+      async loadSalesHub() {
+        const quoteProductSelector = document.getElementById('quoteProductSelector');
+
+        // Fetch products catalog
+        let catalog = this.getProducts();
+        if (catalog.length === 0) {
+          try {
+            // Load base catalog products if local storage is empty
+            const response = await fetch('./data/products.json');
+            catalog = await response.json();
+            localStorage.setItem('kafi_products', JSON.stringify(catalog));
+          } catch (e) {
+            console.error('Failed to load base product catalog:', e);
+          }
+        }
+
+        // Render product checkboxes for quote selector
+        quoteProductSelector.innerHTML = '';
+        catalog.forEach(p => {
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'quote-product-item';
+          itemDiv.innerHTML = `
+            <label class="quote-product-label">
+              <input type="checkbox" class="quote-prod-checkbox" value="${p.id || p.name}">
+              ${this.escapeHtml(p.name)}
+            </label>
+            <input type="number" class="quote-qty-input" value="1" min="1" style="width: 50px;">
+          `;
+          quoteProductSelector.appendChild(itemDiv);
+        });
+
+        // Load CRM Leads
+        this.renderCrmLeads();
+        this.updateSalesAlerts();
+      }
+
+      renderCrmLeads() {
+        const body = document.getElementById('crmLeadsBody');
+        const select = document.getElementById('quoteLeadSelect');
+        const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+
+        body.innerHTML = '';
+        select.innerHTML = '<option value="">-- Select Lead --</option>';
+
+        if (buyers.length === 0) {
+          body.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--text-muted);">No leads analyzed yet. Paste text in the Evaluator to add a lead.</td></tr>`;
+          return;
+        }
+
+        buyers.forEach((b, idx) => {
+          // Add option to select dropdown
+          const opt = document.createElement('option');
+          opt.value = idx;
+          opt.textContent = `${b.buyerName} (${b.company || 'Unknown Company'})`;
+          select.appendChild(opt);
+
+          // Table row
+          const tr = document.createElement('tr');
+          tr.style.borderBottom = '1px solid #222';
+          
+          let scoreClass = 'lead-cold';
+          if (b.leadScore === 'HOT') scoreClass = 'lead-hot';
+          else if (b.leadScore === 'WARM') scoreClass = 'lead-warm';
+
+          tr.innerHTML = `
+            <td style="padding: 12px 16px; font-weight: 500;">${this.escapeHtml(b.buyerName || 'Unknown')}</td>
+            <td style="padding: 12px 16px;">${this.escapeHtml(b.company || 'Unknown')}</td>
+            <td style="padding: 12px 16px;">${this.escapeHtml(b.designation || 'Manager')}</td>
+            <td style="padding: 12px 16px;">${this.escapeHtml(b.productHandling || 'Commodities')}</td>
+            <td style="padding: 12px 16px;">${this.escapeHtml(b.nationality || 'Unknown')}</td>
+            <td style="padding: 12px 16px;"><span class="lead-score-badge ${scoreClass}">${b.leadScore}</span></td>
+            <td style="padding: 12px 16px; text-align: right;">
+              <button class="admin-btn admin-btn--ghost admin-btn--sm delete-lead-btn" data-index="${idx}" type="button" style="padding: 4px 8px; font-size: 11px; color: var(--error);">Delete</button>
+            </td>
+          `;
+          body.appendChild(tr);
+        });
+
+        // Add delete event listeners
+        body.querySelectorAll('.delete-lead-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const index = parseInt(btn.dataset.index);
+            if (confirm('Are you sure you want to delete this lead?')) {
+              buyers.splice(index, 1);
+              localStorage.setItem('kafi_buyers', JSON.stringify(buyers));
+              this.renderCrmLeads();
+              this.updateSalesAlerts();
+              this.showToast('Lead deleted', 'warning');
+            }
+          });
+        });
+      }
+
+      updateSalesAlerts() {
+        const container = document.getElementById('salesAlerts');
+        if (!container) return;
+
+        const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+        if (!this.salesAgent) {
+          container.innerHTML = '';
+          container.style.display = 'none';
+          return;
+        }
+
+        const alerts = this.salesAgent.getGreetingAlerts(buyers);
+        if (alerts.length === 0) {
+          container.innerHTML = '';
+          container.style.display = 'none';
+          return;
+        }
+
+        container.style.display = 'block';
+        container.className = 'sales-alert-banner';
+        container.innerHTML = `
+          <div style="font-weight: bold; color: var(--kafi-gold); font-size: 14px; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor"/></svg>
+            B2B Relationship Alerts
+          </div>
+        `;
+
+        alerts.forEach(alert => {
+          const div = document.createElement('div');
+          div.className = 'sales-alert-item';
+          div.innerHTML = `
+            <span>${this.escapeHtml(alert.message)}</span>
+            <button class="admin-btn admin-btn--gold admin-btn--sm alert-action-btn" data-buyer-id="${alert.buyerId}" data-alert-type="${alert.type}" type="button" style="padding: 2px 8px; font-size: 11px; margin-left: auto;">
+              Generate Pitch
+            </button>
+          `;
+          container.appendChild(div);
+        });
+
+        // Hook up alert buttons
+        container.querySelectorAll('.alert-action-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+            const name = btn.parentElement.querySelector('span').textContent.split(' ')[2]; 
+            const index = buyers.findIndex(b => b.buyerName.includes(name) || name.includes(b.buyerName));
+            if (index !== -1) {
+              document.getElementById('quoteLeadSelect').value = index;
+              const type = btn.dataset.alertType === 'birthday' ? 'birthday' : 'national_day';
+              document.getElementById('greetingTypeSelect').value = type;
+              this.showToast('Lead selected. Generating greeting...', 'info');
+              
+              // Scroll to greeting
+              document.getElementById('greetingTypeSelect').scrollIntoView({ behavior: 'smooth' });
+            }
+          });
+        });
+      }
+
+      bindSalesEvents() {
+        const evaluateBtn = document.getElementById('evaluateLeadBtn');
+        const generateQuoteBtn = document.getElementById('generateQuoteBtn');
+        const generateOutreachBtn = document.getElementById('generateOutreachBtn');
+        const generateGreetingBtn = document.getElementById('generateGreetingBtn');
+
+        const copyOutreachBtn = document.getElementById('copyOutreachBtn');
+        const copyGreetingBtn = document.getElementById('copyGreetingBtn');
+        const addNewLeadBtn = document.getElementById('addNewLeadBtn');
+
+        if (!evaluateBtn) return; // Guard for pages without sales tabs
+
+        // 1. Evaluate Lead
+        evaluateBtn.addEventListener('click', async () => {
+          const rawText = document.getElementById('leadInputText').value.trim();
+          if (!rawText) {
+            alert('Please paste some buyer details first.');
+            return;
+          }
+
+          evaluateBtn.disabled = true;
+          evaluateBtn.textContent = 'Analyzing Profile...';
+          const resultBox = document.getElementById('leadEvaluationResult');
+          resultBox.style.display = 'none';
+
+          try {
+            if (!this.salesAgent) {
+              throw new Error('Sales agent module is not initialized.');
+            }
+            
+            const catalog = this.getProducts();
+            const profile = await this.salesAgent.evaluateLead(rawText, catalog);
+            this.activeEvaluationResult = profile;
+
+            // Display Results
+            let scoreClass = 'lead-cold';
+            if (profile.leadScore === 'HOT') scoreClass = 'lead-hot';
+            else if (profile.leadScore === 'WARM') scoreClass = 'lead-warm';
+
+            resultBox.innerHTML = `
+              <div style="font-weight: bold; color: var(--kafi-gold); font-size: 14px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 6px;">Lead Intelligence Summary</div>
+              <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px; font-size: 12px;">
+                <span style="color: #9ca3af;">Name:</span><strong>${this.escapeHtml(profile.buyerName)}</strong>
+                <span style="color: #9ca3af;">Company:</span><strong>${this.escapeHtml(profile.company)}</strong>
+                <span style="color: #9ca3af;">Title:</span><span>${this.escapeHtml(profile.designation)}</span>
+                <span style="color: #9ca3af;">Nationality:</span><span>${this.escapeHtml(profile.nationality)}</span>
+                <span style="color: #9ca3af;">DOB:</span><span>${this.escapeHtml(profile.dob || 'Not detected')}</span>
+                <span style="color: #9ca3af;">Products:</span><span>${this.escapeHtml(profile.productHandling)}</span>
+                <span style="color: #9ca3af;">Lead Score:</span><span><span class="lead-score-badge ${scoreClass}">${profile.leadScore}</span></span>
+                <span style="color: #9ca3af;">Rationale:</span><span style="grid-column: 1 / span 2; font-style: italic; color: #cbd5e1; margin-top: 4px; padding: 6px; background: rgba(255,255,255,0.02); border-radius: 4px;">${this.escapeHtml(profile.rationale)}</span>
+              </div>
+              <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end;">
+                <button class="admin-btn admin-btn--gold admin-btn--sm" id="saveLeadToCrmBtn" type="button" style="padding: 4px 10px; font-size: 11px;">Save Lead to CRM</button>
+              </div>
+            `;
+            resultBox.style.display = 'block';
+
+            // Add Save click listener
+            document.getElementById('saveLeadToCrmBtn').addEventListener('click', () => {
+              const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+              profile.id = `L-${Date.now()}`;
+              buyers.push(profile);
+              localStorage.setItem('kafi_buyers', JSON.stringify(buyers));
+              this.renderCrmLeads();
+              this.updateSalesAlerts();
+              this.showToast('Lead saved successfully', 'success');
+              document.getElementById('saveLeadToCrmBtn').disabled = true;
+              document.getElementById('saveLeadToCrmBtn').textContent = 'Saved';
+            });
+          } catch (e) {
+            console.error(e);
+            this.showToast('Error evaluating lead: ' + e.message, 'error');
+          } finally {
+            evaluateBtn.disabled = false;
+            evaluateBtn.textContent = 'Evaluate Lead';
+          }
+        });
+
+        // 2. Generate B2B Quotation
+        generateQuoteBtn.addEventListener('click', () => {
+          const leadSelect = document.getElementById('quoteLeadSelect');
+          const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+          
+          let selectedLead = { buyerName: 'Valued Lead', company: 'Direct Importer', nationality: 'UAE', leadScore: 'WARM' };
+          if (leadSelect.value !== '') {
+            selectedLead = buyers[parseInt(leadSelect.value)];
+          }
+
+          // Gather checked products
+          const items = [];
+          document.querySelectorAll('.quote-prod-checkbox:checked').forEach(cb => {
+            const qtyInput = cb.closest('.quote-product-item').querySelector('.quote-qty-input');
+            items.push({
+              id: cb.value,
+              quantity: parseInt(qtyInput.value) || 1
+            });
+          });
+
+          if (items.length === 0) {
+            alert('Please select at least one product.');
+            return;
+          }
+
+          const catalog = this.getProducts();
+          const quote = this.salesAgent.generateB2BQuote(selectedLead, items, catalog);
+          
+          const resultBox = document.getElementById('quoteResult');
+          resultBox.style.display = 'none';
+
+          // Format quotation HTML output
+          let quoteItemsHtml = quote.items.map(item => `
+            <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom: 4px; border-bottom: 1px dashed #333; padding-bottom: 2px;">
+              <span>${item.name} (${item.quantity} tons)</span>
+              <span style="color: #9ca3af;">Packaging: ${item.packaging}</span>
+            </div>
+          `).join('');
+
+          let recsHtml = quote.recommendations.map(rec => `
+            <div style="font-size:12px; margin-bottom: 6px; padding: 6px; background: rgba(197, 153, 46, 0.08); border-left: 2px solid var(--kafi-gold); border-radius: 2px;">
+              <strong>💡 Upsell ${rec.name}:</strong> ${rec.reason}
+            </div>
+          `).join('');
+
+          resultBox.innerHTML = `
+            <div style="font-weight: bold; color: var(--kafi-gold); font-size: 13px; margin-bottom: 8px; display:flex; justify-content:space-between;">
+              <span>Quotation ${quote.quoteId}</span>
+              <span>${quote.date}</span>
+            </div>
+            <div style="font-size: 12px; margin-bottom: 12px; border-bottom: 1px solid #333; padding-bottom: 6px;">
+              <strong>Buyer:</strong> ${this.escapeHtml(quote.buyerName)}<br>
+              <strong>Company:</strong> ${this.escapeHtml(quote.company)} (${this.escapeHtml(quote.nationality)})
+            </div>
+            <div style="margin-bottom: 12px;">
+              <div style="font-weight: bold; font-size:11px; text-transform:uppercase; color:#9ca3af; margin-bottom: 4px;">Items Requested:</div>
+              ${quoteItemsHtml}
+            </div>
+            <div>
+              <div style="font-weight: bold; font-size:11px; text-transform:uppercase; color:#9ca3af; margin-bottom: 4px;">B2B recommendations:</div>
+              ${recsHtml || '<span style="font-size:11px; color:#686860;">No special recommendations.</span>'}
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end;">
+              <button class="admin-btn admin-btn--gold admin-btn--sm" id="exportQuoteBtn" type="button" style="padding: 2px 8px; font-size: 11px;">Copy Quote Text</button>
+            </div>
+          `;
+          resultBox.style.display = 'block';
+
+          document.getElementById('exportQuoteBtn').addEventListener('click', () => {
+            const rawText = `KAFI Group Export Price Quotation\nQuote ID: ${quote.quoteId} | Date: ${quote.date}\nBuyer: ${quote.buyerName} | Company: ${quote.company}\n\nRequested items:\n` + 
+              quote.items.map(item => `- ${item.name} (${item.quantity} tons) -- Packaging: ${item.packaging}`).join('\n') + 
+              `\n\nUpselling recommendations:\n` + 
+              quote.recommendations.map(r => `- ${r.name}: ${r.reason}`).join('\n');
+            navigator.clipboard.writeText(rawText);
+            this.showToast('Quotation text copied!', 'success');
+          });
+        });
+
+        // 3. Generate Outreach Pitch
+        generateOutreachBtn.addEventListener('click', async () => {
+          const leadSelect = document.getElementById('quoteLeadSelect');
+          const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+          
+          let selectedLead = this.activeEvaluationResult;
+          if (leadSelect.value !== '') {
+            selectedLead = buyers[parseInt(leadSelect.value)];
+          }
+
+          if (!selectedLead) {
+            alert('Please select or evaluate a lead profile first.');
+            return;
+          }
+
+          generateOutreachBtn.disabled = true;
+          generateOutreachBtn.textContent = 'Generating Pitch...';
+          const resultBox = document.getElementById('outreachResult');
+          resultBox.style.display = 'none';
+
+          const type = document.getElementById('outreachType').value;
+          const lang = document.getElementById('outreachLang').value;
+
+          try {
+            const pitch = await this.salesAgent.draftOutreach(selectedLead, type, lang);
+            document.getElementById('outreachText').value = pitch;
+            resultBox.style.display = 'block';
+          } catch (e) {
+            this.showToast('Outreach drafting failed: ' + e.message, 'error');
+          } finally {
+            generateOutreachBtn.disabled = false;
+            generateOutreachBtn.textContent = 'Generate Pitch';
+          }
+        });
+
+        // 4. Generate Greeting
+        generateGreetingBtn.addEventListener('click', async () => {
+          const leadSelect = document.getElementById('quoteLeadSelect');
+          const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+          
+          let selectedLead = this.activeEvaluationResult;
+          if (leadSelect.value !== '') {
+            selectedLead = buyers[parseInt(leadSelect.value)];
+          }
+
+          if (!selectedLead) {
+            alert('Please select or evaluate a lead profile first.');
+            return;
+          }
+
+          generateGreetingBtn.disabled = true;
+          generateGreetingBtn.textContent = 'Generating Greeting...';
+          const resultBox = document.getElementById('greetingResult');
+          resultBox.style.display = 'none';
+
+          const type = document.getElementById('greetingTypeSelect').value;
+
+          try {
+            const greeting = await this.salesAgent.generateGreeting(selectedLead, type);
+            document.getElementById('greetingText').value = greeting;
+            resultBox.style.display = 'block';
+          } catch (e) {
+            this.showToast('Greeting generation failed: ' + e.message, 'error');
+          } finally {
+            generateGreetingBtn.disabled = false;
+            generateGreetingBtn.textContent = 'Generate Greeting';
+          }
+        });
+
+        // Copy buttons
+        copyOutreachBtn.addEventListener('click', () => {
+          const text = document.getElementById('outreachText').value;
+          navigator.clipboard.writeText(text);
+          this.showToast('Pitch copied to clipboard!', 'success');
+        });
+
+        copyGreetingBtn.addEventListener('click', () => {
+          const text = document.getElementById('greetingText').value;
+          navigator.clipboard.writeText(text);
+          this.showToast('Greeting copied to clipboard!', 'success');
+        });
+
+        // 5. Add Manual Lead
+        addNewLeadBtn.addEventListener('click', () => {
+          const name = prompt('Lead Representative Name:');
+          if (!name) return;
+          const company = prompt('Company Name:');
+          const nation = prompt('Nationality / Country (e.g. Saudi, Emirati):');
+          const dob = prompt('DOB (Format: MM-DD, e.g. 12-02):');
+          const products = prompt('Products of interest:');
+
+          const newLead = {
+            id: `L-${Date.now()}`,
+            buyerName: name,
+            company: company || 'Direct Buyer',
+            designation: 'Purchasing Director',
+            nationality: nation || 'Unknown',
+            dob: dob || null,
+            productHandling: products || 'Commodities',
+            leadScore: 'WARM',
+            rationale: 'Manually added to lead directory.'
+          };
+
+          const buyers = JSON.parse(localStorage.getItem('kafi_buyers') || '[]');
+          buyers.push(newLead);
+          localStorage.setItem('kafi_buyers', JSON.stringify(buyers));
+          
+          this.loadSalesHub();
+          this.showToast('Lead added manually', 'success');
+        });
+      }
+
+
+      // ── Settings ────────────────────────────────────────────
+      loadSettings() {
+        const settings = JSON.parse(localStorage.getItem('kafi_settings') || '{}');
+        if (settings.botName) document.getElementById('settingBotName').value = settings.botName;
+        if (settings.welcomeMessage) document.getElementById('settingWelcome').value = settings.welcomeMessage;
+
+        // Load API settings
+        const apiSettings = JSON.parse(localStorage.getItem('kafi_api_settings') || '{}');
+        if (apiSettings.provider) document.getElementById('apiProvider').value = apiSettings.provider;
+        if (apiSettings.apiKey) document.getElementById('apiKey').value = apiSettings.apiKey;
+        if (apiSettings.endpoint) document.getElementById('apiEndpoint').value = apiSettings.endpoint;
+        if (apiSettings.model) document.getElementById('apiModel').value = apiSettings.model;
+        this.updateApiFieldsVisibility();
+      }
+
+      bindSettings() {
+        // Save bot settings
+        document.getElementById('saveSettingsBtn').addEventListener('click', () => {
+          const settings = {
+            botName: document.getElementById('settingBotName').value.trim(),
+            welcomeMessage: document.getElementById('settingWelcome').value.trim(),
+            updatedAt: new Date().toISOString(),
+          };
+          localStorage.setItem('kafi_settings', JSON.stringify(settings));
+          this.showToast('Settings saved successfully', 'success');
+        });
+
+        // Export Conversations
+        document.getElementById('exportConversations').addEventListener('click', () => {
+          this.exportCSV('conversations');
+        });
+
+        // Export Leads
+        document.getElementById('exportLeads').addEventListener('click', () => {
+          this.exportCSV('leads');
+        });
+
+        // Clear data
+        document.getElementById('clearConversations').addEventListener('click', () => {
+          if (confirm('Delete ALL conversation data? This cannot be undone.')) {
+            localStorage.removeItem('kafi_conversations');
+            this.showToast('Conversations cleared', 'warning');
+            this.loadDashboard();
+          }
+        });
+
+        document.getElementById('clearLeads').addEventListener('click', () => {
+          if (confirm('Delete ALL lead data? This cannot be undone.')) {
+            localStorage.removeItem('kafi_leads');
+            this.showToast('Leads cleared', 'warning');
+          }
+        });
+
+        document.getElementById('clearAll').addEventListener('click', () => {
+          if (confirm('⚠ DELETE EVERYTHING? Conversations, leads, training data, products — ALL will be gone forever.')) {
+            ['kafi_conversations', 'kafi_leads', 'kafi_custom_qa', 'kafi_unrecognized', 'kafi_products', 'kafi_settings'].forEach(k => localStorage.removeItem(k));
+            this.showToast('All data cleared', 'warning');
+            this.loadDashboard();
+          }
+        });
+      }
+
+
+      // ── API Settings ────────────────────────────────────────
+      bindApiSettings() {
+        const providerSelect = document.getElementById('apiProvider');
+        providerSelect.addEventListener('change', () => this.updateApiFieldsVisibility());
+
+        // Toggle API key visibility
+        document.getElementById('toggleApiKey').addEventListener('click', () => {
+          const input = document.getElementById('apiKey');
+          const btn = document.getElementById('toggleApiKey');
+          if (input.type === 'password') {
+            input.type = 'text';
+            btn.textContent = 'Hide';
+          } else {
+            input.type = 'password';
+            btn.textContent = 'Show';
+          }
+        });
+
+        // Save API settings
+        document.getElementById('saveApiBtn').addEventListener('click', () => {
+          const apiSettings = {
+            provider: document.getElementById('apiProvider').value,
+            apiKey: document.getElementById('apiKey').value.trim(),
+            endpoint: document.getElementById('apiEndpoint').value.trim(),
+            model: document.getElementById('apiModel').value.trim(),
+            savedAt: new Date().toISOString(),
+          };
+          localStorage.setItem('kafi_api_settings', JSON.stringify(apiSettings));
+          this.showToast('API settings saved', 'success');
+        });
+
+        // Test Connection
+        document.getElementById('testApiBtn').addEventListener('click', async () => {
+          const btn = document.getElementById('testApiBtn');
+          btn.textContent = 'Testing...';
+          btn.disabled = true;
+
+          // Simulate test
+          setTimeout(() => {
+            const provider = document.getElementById('apiProvider').value;
+            const apiKey = document.getElementById('apiKey').value.trim();
+            if (provider === 'local' || !apiKey) {
+              this.showToast('Local NLP does not require a connection test.', 'warning');
+            } else {
+              this.showToast('Connection test — API key format accepted. Full validation occurs on first query.', 'success');
+            }
+            btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor"/></svg> Test Connection`;
+            btn.disabled = false;
+          }, 1500);
+        });
+      }
+
+      updateApiFieldsVisibility() {
+        const provider = document.getElementById('apiProvider').value;
+        const showApi = provider !== 'local';
+
+        document.getElementById('apiKeyGroup').style.display = showApi ? '' : 'none';
+        document.getElementById('apiModelGroup').style.display = showApi ? '' : 'none';
+        document.getElementById('testApiBtn').style.display = showApi ? '' : 'none';
+        document.getElementById('apiEndpointGroup').style.display = provider === 'custom' ? '' : 'none';
+      }
+
+
+      // ── CSV Export ──────────────────────────────────────────
+      exportCSV(type) {
+        let csv = '';
+        let filename = '';
+
+        if (type === 'conversations') {
+          const conversations = this.getConversations();
+          csv = 'Session ID,Timestamp,Role,Message,Language\n';
+          Object.values(conversations).forEach(s => {
+            (s.messages || []).forEach(m => {
+              csv += `"${s.id}","${m.timestamp}","${m.role}","${(m.text || '').replace(/"/g, '""')}","${s.language || 'en'}"\n`;
+            });
+          });
+          filename = `kafi_conversations_${new Date().toISOString().split('T')[0]}.csv`;
+        } else if (type === 'leads') {
+          const leads = JSON.parse(localStorage.getItem('kafi_leads') || '[]');
+          csv = 'Name,Email,Phone,Message,Session,Timestamp\n';
+          leads.forEach(l => {
+            csv += `"${l.name}","${l.email}","${l.phone}","${(l.message || '').replace(/"/g, '""')}","${l.sessionId}","${l.timestamp}"\n`;
+          });
+          filename = `kafi_leads_${new Date().toISOString().split('T')[0]}.csv`;
+        }
+
+        // Download
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        link.click();
+        URL.revokeObjectURL(url);
+
+        this.showToast(`${type} exported successfully`, 'success');
+      }
+
+
+      // ── Data Access Helpers ─────────────────────────────────
+      getConversations() {
+        return JSON.parse(localStorage.getItem('kafi_conversations') || '{}');
+      }
+
+      getUnrecognizedInputs() {
+        return JSON.parse(localStorage.getItem('kafi_unrecognized') || '[]');
+      }
+
+      getProducts() {
+        return JSON.parse(localStorage.getItem('kafi_products') || '[]');
+      }
+
+
+      // ── Toast Notifications ─────────────────────────────────
+      showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `admin-toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(12px)';
+          toast.style.transition = 'all 300ms ease';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+
+      // ── Utility ─────────────────────────────────────────────
+      escapeHtml(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      }
+    }
+
+
+    // ── Initialize ────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', () => {
+      window.adminPanel = new AdminPanel();
+    });
+
+    if (document.readyState !== 'loading') {
+      window.adminPanel = new AdminPanel();
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,29 @@
+# Secrets & runtime config (use Settings UI locally; env vars on Vercel)
+data/ai-config.json
+data/enrich-config.json
+data/outlook-config.json
+data/outlook-tokens.json
+data/outlook-device-pending.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Vercel
+.vercel/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Internal notes (not needed in repo)
+my chat analysis.txt
+chat data an internee made.txt
+NeuroGrid_Complete_Context*.txt
+
+# Unrelated local docs / assets
+*.docx
+Pics/

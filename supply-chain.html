@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KAFI Supply Chain AI Agent — demand planning, procurement, inventory, suppliers, logistics, risk.">
+  <title>KAFI Supply Chain AI Agent</title>
+  <link rel="stylesheet" href="styles/app-nav.css">
+  <link rel="stylesheet" href="styles/supply-chain.css">
+  <script src="engine/app-nav.js" defer></script>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     KAFI AI AGENT 6 — Supply Chain AI Agent
+     © 2026 NeuroGrid Labs · Built for KAFI Group
+     ═══════════════════════════════════════════════════════════ -->
+
+<div class="scm-app">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="scm-sidebar">
+    <div class="scm-logo">
+      <div class="scm-logo-mark">K</div>
+      <div class="scm-logo-text"><b>KAFI Supply Chain</b><span>AI Agent 6</span></div>
+    </div>
+    <button class="scm-nav-item active" data-panel="dashboard"><span class="ico">📊</span> Dashboard</button>
+    <button class="scm-nav-item" data-panel="copilot"><span class="ico">🤖</span> AI Copilot</button>
+    <button class="scm-nav-item" data-panel="forecast"><span class="ico">📈</span> Demand Forecast</button>
+    <button class="scm-nav-item" data-panel="inventory"><span class="ico">📦</span> Inventory</button>
+    <button class="scm-nav-item" data-panel="procurement"><span class="ico">🧾</span> Procurement</button>
+    <button class="scm-nav-item" data-panel="suppliers"><span class="ico">🤝</span> Suppliers</button>
+    <button class="scm-nav-item" data-panel="logistics"><span class="ico">🚚</span> Logistics</button>
+    <button class="scm-nav-item" data-panel="risks"><span class="ico">⚠️</span> Risk & Compliance</button>
+    <button class="scm-nav-item" data-panel="data"><span class="ico">🗂️</span> Data Center</button>
+    <div class="scm-nav-spacer"></div>
+    <button class="scm-nav-item" data-panel="settings" id="settingsNav"><span class="ico">🔒</span> Settings</button>
+    <div class="scm-nav-footer">KAFI Group · Karachi<br>© 2026 NeuroGrid Labs</div>
+  </aside>
+
+  <!-- ── Main ────────────────────────────────────────────── -->
+  <main class="scm-main">
+
+    <!-- DASHBOARD -->
+    <section class="scm-panel active" id="panel-dashboard">
+      <div class="scm-page-title">Supply Chain Dashboard</div>
+      <div class="scm-page-sub" id="dashSub">Live view across procurement, inventory, logistics and suppliers.</div>
+      <div class="kpi-grid" id="kpiGrid"></div>
+      <div class="two-col">
+        <div class="scm-card"><h3>⚠️ Priority Alerts <span class="hint">auto-detected</span></h3><div id="dashAlerts"></div></div>
+        <div class="scm-card"><h3>🧾 Purchase Requirements <span class="hint">order these now</span></h3><div id="dashReqs" class="scm-table-wrap"></div></div>
+      </div>
+      <div class="scm-card"><h3>💰 Budget vs Actual (Supply Chain Spend, USD)</h3><div class="chart-box"><canvas class="scm-chart" id="budgetChart"></canvas></div></div>
+    </section>
+
+    <!-- AI COPILOT -->
+    <section class="scm-panel" id="panel-copilot">
+      <div class="scm-page-title">AI Copilot</div>
+      <div class="scm-page-sub">Ask anything about demand, stock, suppliers, shipments or costs — answers are grounded in your live data.</div>
+      <div class="copilot-wrap">
+        <div class="suggestions" id="copilotSuggestions"></div>
+        <div class="copilot-messages" id="copilotMessages"></div>
+        <div class="copilot-inputbar">
+          <textarea id="copilotInput" placeholder="e.g. Which items must we order this week, and why?"></textarea>
+          <button class="btn gold" id="copilotSend">Send</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORECAST -->
+    <section class="scm-panel" id="panel-forecast">
+      <div class="scm-page-title">Demand Planning & Forecasting</div>
+      <div class="scm-page-sub">Monthly history with a 3-month forward forecast (moving average + trend + seasonality).</div>
+      <div class="scm-card">
+        <h3>📈 Forecast by Product
+          <span class="hint"><select class="scm-select" id="forecastSku" style="width:auto;min-width:250px"></select></span>
+        </h3>
+        <div class="chart-box"><canvas class="scm-chart" id="forecastChart"></canvas></div>
+      </div>
+      <div class="scm-card"><h3>🔢 All Products — Next 3 Months</h3><div class="scm-table-wrap" id="forecastTable"></div></div>
+    </section>
+
+    <!-- INVENTORY -->
+    <section class="scm-panel" id="panel-inventory">
+      <div class="scm-page-title">Inventory Management</div>
+      <div class="scm-page-sub">Stock levels vs reorder points, EOQ, expiry and slow-moving detection.</div>
+      <div class="scm-card"><h3>📦 Stock Position</h3><div class="scm-table-wrap" id="inventoryTable"></div></div>
+      <div class="scm-card"><h3>⏳ Expiry Watch <span class="hint">batches expiring within 60 days</span></h3><div id="expiryList"></div></div>
+    </section>
+
+    <!-- PROCUREMENT -->
+    <section class="scm-panel" id="panel-procurement">
+      <div class="scm-page-title">Procurement Planning & Execution</div>
+      <div class="scm-page-sub">Auto-generated purchase requirements; issue POs in one click.</div>
+      <div class="scm-card"><h3>🛒 Purchase Requirements <span class="hint">from stock position + forecast</span></h3><div class="scm-table-wrap" id="reqTable"></div></div>
+      <div class="scm-card"><h3>📚 Purchase Order History</h3><div class="scm-table-wrap" id="poTable"></div></div>
+    </section>
+
+    <!-- SUPPLIERS -->
+    <section class="scm-panel" id="panel-suppliers">
+      <div class="scm-page-title">Supplier & Vendor Management</div>
+      <div class="scm-page-sub">Approved supplier database with performance scorecards from real PO history.</div>
+      <div class="scm-card"><h3>🏆 Supplier Scorecards <span class="hint">on-time 40% · fill rate 30% · price 30%</span></h3><div class="scm-table-wrap" id="supplierTable"></div></div>
+    </section>
+
+    <!-- LOGISTICS -->
+    <section class="scm-panel" id="panel-logistics">
+      <div class="scm-page-title">Logistics & Distribution</div>
+      <div class="scm-page-sub">Inbound & outbound shipment tracking with landed-cost analysis.</div>
+      <div class="scm-card"><h3>🚚 Shipment Board</h3><div class="scm-table-wrap" id="shipmentTable"></div></div>
+      <div class="scm-card"><h3>🧮 Landed Cost Analysis <span class="hint">value + freight + duty + clearing per shipment</span></h3><div class="scm-table-wrap" id="landedTable"></div></div>
+    </section>
+
+    <!-- RISKS -->
+    <section class="scm-panel" id="panel-risks">
+      <div class="scm-page-title">Risk & Compliance</div>
+      <div class="scm-page-sub">Automatic risk detection: stockouts, delays, single-sourcing, spend concentration, price inflation.</div>
+      <div class="scm-card"><h3>⚠️ Live Risk Register</h3><div id="riskList"></div></div>
+    </section>
+
+    <!-- DATA CENTER -->
+    <section class="scm-panel" id="panel-data">
+      <div class="scm-page-title">Data Center</div>
+      <div class="scm-page-sub">Feed the agent with ERP/WMS exports (CSV) — or load the KAFI sample dataset to explore.</div>
+      <div class="scm-card">
+        <h3>🗂️ Datasets</h3>
+        <div class="dataset-grid" id="datasetGrid"></div>
+        <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn gold" id="loadSampleBtn">Load KAFI sample data</button>
+          <button class="btn danger" id="clearDataBtn">Clear all data</button>
+        </div>
+        <p style="margin-top:14px;font-size:12px;color:var(--text-3)">
+          CSV column reference — products: sku,name,category,unit,unitCost,leadTimeDays,safetyStockDays,supplierId,moq ·
+          sales: date,sku,qty,market · inventory: sku,onHand,warehouse,expiryDate ·
+          suppliers: id,name,country,city,categories,paymentTerms ·
+          purchaseOrders: poNumber,date,supplierId,sku,qty,unitPrice,expectedDate,receivedDate,receivedQty,status ·
+          shipments: id,type,ref,carrier,mode,origin,destination,etd,eta,actualArrival,status,freightCost,dutyPct,otherCost,cargoValue,units ·
+          budget: month,budgeted,actual
+        </p>
+      </div>
+    </section>
+
+    <!-- SETTINGS (locked) -->
+    <section class="scm-panel" id="panel-settings">
+      <div class="scm-page-title">Settings — AI Providers</div>
+      <div class="scm-page-sub">Admin only. Configure which AI powers the copilot; providers are tried top-to-bottom (automatic failover).</div>
+      <div class="locked-note">🔑 Keys are stored server-side in <code>data/ai-config.json</code> (never served over HTTP) and sent only to the provider you configure. Any OpenAI-compatible endpoint works — for Manus, Cursor or your own LLM choose the provider and set its Base URL.</div>
+      <div class="scm-card">
+        <h3>🔌 Provider Chain <span class="hint">first working provider answers</span></h3>
+        <div id="providerRows"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+          <button class="btn ghost" id="addProviderBtn">+ Add provider</button>
+          <button class="btn gold" id="saveProvidersBtn">Save configuration</button>
+          <button class="btn" id="testProvidersBtn">Test connection</button>
+        </div>
+        <div class="test-result" id="testResult"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- PO modal -->
+<div class="modal-overlay" id="poModal">
+  <div style="width:100%">
+    <div class="modal-actions">
+      <button class="btn gold" onclick="window.print()">🖨️ Print / Save PDF</button>
+      <button class="btn ghost" id="poModalClose">Close</button>
+    </div>
+    <div class="po-doc" id="poDoc"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import * as SCM from './engine/supply-chain-agent.js';
+import { buildSampleData } from './data/supply-chain-sample.js';
+
+const $ = id => document.getElementById(id);
+const ADMIN_KEY = 'kafi_admin_auth';
+
+let data = SCM.loadData();
+const hasData = () => data.products.length > 0;
+
+function fmt(n) { return typeof n === 'number' ? n.toLocaleString('en-US') : n; }
+function usd(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function esc(s) { const d = document.createElement('div'); d.textContent = String(s ?? ''); return d.innerHTML; }
+
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ═════════ Navigation ═════════
+const SETTINGS_PW = 'kafi2026';
+document.querySelectorAll('.scm-nav-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const panel = btn.dataset.panel;
+    if (panel === 'settings' && sessionStorage.getItem(ADMIN_KEY) !== 'true') {
+      const pw = prompt('🔒 Settings are restricted.\n\nEnter the admin password:');
+      if (pw !== SETTINGS_PW) { if (pw !== null) toast('Access denied — incorrect password.'); return; }
+      sessionStorage.setItem(ADMIN_KEY, 'true');
+      loadProviderConfig();
+    }
+    document.querySelectorAll('.scm-nav-item').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.scm-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    $('panel-' + panel).classList.add('active');
+  });
+});
+
+// ═════════ Rendering ═════════
+
+function renderAll() {
+  renderDashboard(); renderForecast(); renderInventory();
+  renderProcurement(); renderSuppliers(); renderLogistics();
+  renderRisks(); renderDataCenter();
+}
+
+const EMPTY_HINT = '<p style="color:var(--text-3);font-size:13px">No data loaded — open the <b>Data Center</b> and load the KAFI sample data or upload CSVs.</p>';
+
+function statusBadge(status) {
+  const map = { OK: 'ok', REORDER: 'reorder', STOCKOUT: 'stockout', OVERSTOCK: 'over', 'SLOW-MOVING': 'slow' };
+  return `<span class="badge ${map[status] || 'info'}">${status}</span>`;
+}
+function sevBadge(sev) {
+  const map = { CRITICAL: 'crit', HIGH: 'stockout', MEDIUM: 'reorder', LOW: 'info' };
+  return `<span class="badge ${map[sev] || 'info'}">${sev}</span>`;
+}
+
+// ── Dashboard ──
+function renderDashboard() {
+  if (!hasData()) { $('kpiGrid').innerHTML = ''; $('dashAlerts').innerHTML = EMPTY_HINT; $('dashReqs').innerHTML = ''; drawChart($('budgetChart'), null); $('dashSub').textContent = 'No data loaded yet.'; return; }
+  const k = SCM.computeKPIs(data);
+  $('dashSub').textContent = `${data.products.length} products · ${data.suppliers.length} suppliers · ${data.purchaseOrders.length} POs · ${data.shipments.length} shipments`;
+  $('kpiGrid').innerHTML = `
+    <div class="kpi-card"><div class="kpi-label">Stock Value</div><div class="kpi-value">${usd(k.stockValue)}</div><div class="kpi-note">at unit cost</div></div>
+    <div class="kpi-card"><div class="kpi-label">Inventory Turnover</div><div class="kpi-value ${k.inventoryTurnover >= 6 ? 'good' : k.inventoryTurnover >= 3 ? 'warn' : 'bad'}">${k.inventoryTurnover ?? '—'}×</div><div class="kpi-note">annualized</div></div>
+    <div class="kpi-card"><div class="kpi-label">Avg PO Lead Time</div><div class="kpi-value">${k.avgLeadTimeDays ?? '—'}d</div><div class="kpi-note">order → receipt</div></div>
+    <div class="kpi-card"><div class="kpi-label">Fill Rate</div><div class="kpi-value ${k.fillRatePct >= 95 ? 'good' : k.fillRatePct >= 85 ? 'warn' : 'bad'}">${k.fillRatePct ?? '—'}%</div><div class="kpi-note">received vs ordered</div></div>
+    <div class="kpi-card"><div class="kpi-label">OTIF</div><div class="kpi-value ${k.otifPct >= 90 ? 'good' : k.otifPct >= 75 ? 'warn' : 'bad'}">${k.otifPct ?? '—'}%</div><div class="kpi-note">on time, in full</div></div>
+    <div class="kpi-card"><div class="kpi-label">Reorder Alerts</div><div class="kpi-value ${k.reorderAlerts ? 'bad' : 'good'}">${k.reorderAlerts}</div><div class="kpi-note">items at/below ROP</div></div>
+    <div class="kpi-card"><div class="kpi-label">Shipments</div><div class="kpi-value">${k.activeShipments}<span style="font-size:14px;color:var(--text-2)"> active</span></div><div class="kpi-note">${k.delayedShipments} delayed</div></div>
+    <div class="kpi-card"><div class="kpi-label">Budget Variance</div><div class="kpi-value ${k.budgetVariancePct <= 0 ? 'good' : k.budgetVariancePct <= 5 ? 'warn' : 'bad'}">${k.budgetVariancePct > 0 ? '+' : ''}${k.budgetVariancePct ?? '—'}%</div><div class="kpi-note">${usd(k.actualTotal)} vs ${usd(k.budgetTotal)}</div></div>`;
+
+  const risks = SCM.detectRisks(data).slice(0, 6);
+  $('dashAlerts').innerHTML = risks.length
+    ? risks.map(r => `<div class="risk-item">${sevBadge(r.severity)}<div><b>${esc(r.title)}</b><p>${esc(r.detail)}</p></div></div>`).join('')
+    : '<p style="color:var(--text-3)">No active alerts. Supply chain is healthy. ✅</p>';
+
+  const reqs = SCM.purchaseRequirements(data);
+  $('dashReqs').innerHTML = reqs.length ? `<table class="scm-table"><thead><tr><th>Item</th><th class="num">Order Qty</th><th class="num">Est. Cost</th><th>Urgency</th></tr></thead><tbody>` +
+    reqs.map(r => `<tr><td>${esc(r.name)}</td><td class="num">${fmt(r.suggestedQty)}</td><td class="num">${usd(r.estTotal)}</td><td>${sevBadge(r.urgency)}</td></tr>`).join('') +
+    '</tbody></table>' : '<p style="color:var(--text-3)">Nothing to order right now. ✅</p>';
+
+  drawChart($('budgetChart'), {
+    labels: data.budget.map(b => b.month),
+    series: [
+      { name: 'Budget', color: '#c5992e', values: data.budget.map(b => b.budgeted) },
+      { name: 'Actual', color: '#2d7a2d', values: data.budget.map(b => b.actual) },
+    ],
+  });
+}
+
+// ── Forecast ──
+function renderForecast() {
+  const sel = $('forecastSku');
+  if (!hasData()) { sel.innerHTML = ''; $('forecastTable').innerHTML = EMPTY_HINT; drawChart($('forecastChart'), null); return; }
+  const current = sel.value;
+  sel.innerHTML = data.products.map(p => `<option value="${esc(p.sku)}">${esc(p.name)}</option>`).join('');
+  if (current && data.products.some(p => p.sku === current)) sel.value = current;
+  drawForecastChart();
+
+  const all = SCM.forecastAll(data, 3);
+  $('forecastTable').innerHTML = `<table class="scm-table"><thead><tr><th>Product</th><th class="num">Avg (3mo)</th><th class="num">Trend/mo</th>` +
+    (all[0]?.forecasts || []).map(f => `<th class="num">${f.month}</th>`).join('') + `<th>Method</th></tr></thead><tbody>` +
+    all.map(f => `<tr><td>${esc(f.product.name)}</td><td class="num">${fmt(f.movingAvg ?? '—')}</td><td class="num">${f.trendPerMonth > 0 ? '+' : ''}${fmt(f.trendPerMonth ?? '—')}</td>` +
+      f.forecasts.map(x => `<td class="num"><b>${fmt(x.qty)}</b></td>`).join('') +
+      `<td style="color:var(--text-3);font-size:11.5px">${f.method}</td></tr>`).join('') + '</tbody></table>';
+}
+
+function drawForecastChart() {
+  if (!hasData()) return;
+  const sku = $('forecastSku').value || data.products[0]?.sku;
+  const f = SCM.forecastSKU(data, sku, 3);
+  const hist = f.series.slice(-18);
+  // Forecast line starts from the last history point so the two lines connect
+  const fcValues = hist.map((p, i) => (i === hist.length - 1 ? p.qty : null)).concat(f.forecasts.map(p => p.qty));
+  drawChart($('forecastChart'), {
+    labels: [...hist.map(p => p.month), ...f.forecasts.map(p => p.month)],
+    series: [
+      { name: 'History', color: '#3cae9e', values: [...hist.map(p => p.qty), ...f.forecasts.map(() => null)] },
+      { name: 'Forecast', color: '#d4a94a', dashed: true, values: fcValues },
+    ],
+  });
+}
+$('forecastSku').addEventListener('change', drawForecastChart);
+
+// ── Inventory ──
+function renderInventory() {
+  if (!hasData()) { $('inventoryTable').innerHTML = EMPTY_HINT; $('expiryList').innerHTML = ''; return; }
+  const inv = SCM.inventoryAnalysis(data);
+  $('inventoryTable').innerHTML = `<table class="scm-table"><thead><tr><th>Product</th><th class="num">On Hand</th><th class="num">Daily Demand</th><th class="num">Reorder Point</th><th class="num">Days of Stock</th><th class="num">EOQ</th><th class="num">Stock Value</th><th>Status</th></tr></thead><tbody>` +
+    inv.map(i => `<tr><td><b>${esc(i.name)}</b><br><span style="color:var(--text-3);font-size:11px">${esc(i.sku)}</span></td>
+      <td class="num">${fmt(i.onHand)} ${esc(i.unit || '')}</td><td class="num">${fmt(i.avgDailyDemand)}</td>
+      <td class="num">${fmt(i.reorderPoint)}</td><td class="num">${fmt(i.daysOfStock)}</td><td class="num">${fmt(i.eoq)}</td>
+      <td class="num">${usd(i.stockValue)}</td><td>${statusBadge(i.status)}</td></tr>`).join('') + '</tbody></table>';
+
+  const expiring = inv.filter(i => i.expiringBatches.length);
+  $('expiryList').innerHTML = expiring.length
+    ? expiring.map(i => i.expiringBatches.map(b =>
+        `<div class="risk-item"><span class="badge over">EXPIRY</span><div><b>${esc(i.name)}</b><p>${fmt(b.onHand)} ${esc(i.unit || 'units')} in ${esc(b.warehouse)} expire on <b>${esc(b.expiryDate)}</b> — plan a promotion, transfer or disposal.</p></div></div>`).join('')).join('')
+    : '<p style="color:var(--text-3)">No batches expiring within 60 days. ✅</p>';
+}
+
+// ── Procurement ──
+function renderProcurement() {
+  if (!hasData()) { $('reqTable').innerHTML = EMPTY_HINT; $('poTable').innerHTML = ''; return; }
+  const reqs = SCM.purchaseRequirements(data);
+  $('reqTable').innerHTML = reqs.length ? `<table class="scm-table"><thead><tr><th>Item</th><th class="num">On Hand</th><th class="num">ROP</th><th class="num">Suggested Qty</th><th class="num">Est. Total</th><th>Supplier</th><th>Urgency</th><th></th></tr></thead><tbody>` +
+    reqs.map((r, i) => `<tr><td><b>${esc(r.name)}</b><br><span style="color:var(--text-3);font-size:11px">${esc(r.sku)}</span></td>
+      <td class="num">${fmt(r.onHand)}</td><td class="num">${fmt(r.reorderPoint)}</td>
+      <td class="num"><b>${fmt(r.suggestedQty)}</b> ${esc(r.unit || '')}</td><td class="num">${usd(r.estTotal)}</td>
+      <td>${esc(r.supplierName)}</td><td>${sevBadge(r.urgency)}</td>
+      <td><button class="btn sm gold" data-req="${i}">Issue PO</button></td></tr>`).join('') + '</tbody></table>'
+    : '<p style="color:var(--text-3)">All stock positions are healthy — no purchase requirements. ✅</p>';
+
+  $('reqTable').querySelectorAll('button[data-req]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const req = SCM.purchaseRequirements(data)[Number(btn.dataset.req)];
+      if (!req) return;
+      const po = SCM.createPurchaseOrder(data, req);
+      data = SCM.loadData();
+      renderAll();
+      showPODocument(po);
+      toast(`Purchase order ${po.poNumber} issued.`);
+    });
+  });
+
+  const pos = [...data.purchaseOrders].sort((a, b) => b.date.localeCompare(a.date));
+  $('poTable').innerHTML = `<table class="scm-table"><thead><tr><th>PO #</th><th>Date</th><th>Supplier</th><th>Item</th><th class="num">Qty</th><th class="num">Unit Price</th><th class="num">Value</th><th>Expected</th><th>Received</th><th>Status</th><th></th></tr></thead><tbody>` +
+    pos.map(po => {
+      const sup = data.suppliers.find(s => s.id === po.supplierId);
+      const prod = data.products.find(p => p.sku === po.sku);
+      const late = po.receivedDate && po.receivedDate > po.expectedDate;
+      return `<tr><td><b>${esc(po.poNumber)}</b></td><td>${esc(po.date)}</td><td>${esc(sup?.name || po.supplierId)}</td>
+        <td>${esc(prod?.name || po.sku)}</td><td class="num">${fmt(po.qty)}</td><td class="num">${Number(po.unitPrice).toFixed(2)}</td>
+        <td class="num">${usd(po.qty * po.unitPrice)}</td><td>${esc(po.expectedDate)}</td>
+        <td>${po.receivedDate ? esc(po.receivedDate) + (late ? ' <span class="badge reorder">LATE</span>' : '') : '<span style="color:var(--text-3)">pending</span>'}</td>
+        <td><span class="badge ${po.status === 'CLOSED' ? 'ok' : 'gold'}">${esc(po.status)}</span></td>
+        <td><button class="btn sm ghost" data-po="${esc(po.poNumber)}">View</button></td></tr>`;
+    }).join('') + '</tbody></table>';
+
+  $('poTable').querySelectorAll('button[data-po]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const po = data.purchaseOrders.find(p => p.poNumber === btn.dataset.po);
+      if (po) showPODocument(po);
+    });
+  });
+}
+
+function showPODocument(po) {
+  const sup = data.suppliers.find(s => s.id === po.supplierId);
+  const prod = data.products.find(p => p.sku === po.sku);
+  const total = Number(po.qty) * Number(po.unitPrice);
+  $('poDoc').innerHTML = `
+    <div class="po-head">
+      <div><h2>PURCHASE ORDER</h2><div style="font-size:16px;font-weight:700;color:#a67d1f">${esc(po.poNumber)}</div></div>
+      <div style="text-align:right"><b>Kafi Commodities (Pvt.) Limited</b><br>Kafi House, F-50/1, Block-8, KDA Scheme-5,<br>Clifton, Karachi, Pakistan<br>exports@kafi-group.com · +92-21-35864834</div>
+    </div>
+    <table><tr><th style="width:50%">Supplier</th><th>Details</th></tr>
+      <tr><td><b>${esc(sup?.name || po.supplierId)}</b><br>${esc(sup?.city || '')}, ${esc(sup?.country || '')}<br>Payment terms: ${esc(sup?.paymentTerms || '—')}</td>
+      <td>PO date: <b>${esc(po.date)}</b><br>Required delivery: <b>${esc(po.expectedDate)}</b><br>Deliver to: Kafi Factory, Hub River Road, Karachi</td></tr></table>
+    <table><tr><th>SKU</th><th>Description</th><th>Qty</th><th>Unit</th><th>Unit Price (USD)</th><th>Amount (USD)</th></tr>
+      <tr><td>${esc(po.sku)}</td><td>${esc(prod?.name || '')}</td><td>${fmt(po.qty)}</td><td>${esc(prod?.unit || '')}</td>
+      <td>${Number(po.unitPrice).toFixed(2)}</td><td>${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</td></tr></table>
+    <div class="po-total">TOTAL: USD ${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}</div>
+    ${po.notes ? `<p style="margin-top:10px"><b>Notes:</b> ${esc(po.notes)}</p>` : ''}
+    <div class="po-foot">All goods must meet KAFI Group quality specifications and food-safety certifications (ISO 9001, ISO 22000, HACCP, HALAL where applicable). Please confirm order acceptance and delivery schedule within 48 hours to exports@kafi-group.com.<br><br>Authorized by: ______________________ &nbsp;&nbsp; Date: ____________</div>`;
+  $('poModal').classList.add('open');
+}
+$('poModalClose').addEventListener('click', () => $('poModal').classList.remove('open'));
+$('poModal').addEventListener('click', e => { if (e.target === $('poModal')) $('poModal').classList.remove('open'); });
+
+// ── Suppliers ──
+function renderSuppliers() {
+  if (!hasData()) { $('supplierTable').innerHTML = EMPTY_HINT; return; }
+  const cards = SCM.supplierScorecards(data);
+  $('supplierTable').innerHTML = `<table class="scm-table"><thead><tr><th>Supplier</th><th>Categories</th><th class="num">POs</th><th class="num">On-Time</th><th class="num">Fill Rate</th><th class="num">Avg Lead</th><th class="num">Price Var</th><th class="num">Spend</th><th class="num">Score</th><th>Grade</th></tr></thead><tbody>` +
+    cards.map(c => `<tr><td><b>${esc(c.name)}</b><br><span style="color:var(--text-3);font-size:11px">${esc(c.city)}, ${esc(c.country)}</span></td>
+      <td style="font-size:12px">${esc(c.categories || '')}</td><td class="num">${c.poCount}</td>
+      <td class="num">${c.onTimeRate ?? '—'}%</td><td class="num">${c.fillRate ?? '—'}%</td>
+      <td class="num">${c.avgLeadTimeDays ?? '—'}d</td>
+      <td class="num">${c.avgPriceVariancePct === null ? '—' : (c.avgPriceVariancePct > 0 ? '+' : '') + c.avgPriceVariancePct + '%'}</td>
+      <td class="num">${usd(c.totalSpend)}</td><td class="num">${c.score ?? '—'}</td>
+      <td><span class="grade ${c.grade}">${c.grade}</span></td></tr>`).join('') + '</tbody></table>';
+}
+
+// ── Logistics ──
+function renderLogistics() {
+  if (!hasData()) { $('shipmentTable').innerHTML = EMPTY_HINT; $('landedTable').innerHTML = ''; return; }
+  const board = SCM.shipmentBoard(data);
+  $('shipmentTable').innerHTML = `<table class="scm-table"><thead><tr><th>Shipment</th><th>Type</th><th>Ref</th><th>Route</th><th>Carrier / Mode</th><th>ETD</th><th>ETA</th><th>Status</th></tr></thead><tbody>` +
+    board.map(s => `<tr><td><b>${esc(s.id)}</b></td>
+      <td><span class="badge ${s.type === 'INBOUND' ? 'info' : 'gold'}">${esc(s.type)}</span></td>
+      <td>${esc(s.ref)}</td><td>${esc(s.origin)} → ${esc(s.destination)}</td>
+      <td>${esc(s.carrier)} · ${esc(s.mode)}</td><td>${esc(s.etd)}</td><td>${esc(s.eta)}</td>
+      <td>${s.delivered ? `<span class="badge ok">DELIVERED${s.deliveryVariance !== null && s.deliveryVariance <= 0 ? ' (on time)' : ''}</span>`
+        : s.delayed ? `<span class="badge stockout">DELAYED ${s.delayDays}d</span>` : `<span class="badge info">${esc(s.status)}</span>`}</td></tr>`).join('') + '</tbody></table>';
+
+  $('landedTable').innerHTML = `<table class="scm-table"><thead><tr><th>Shipment</th><th class="num">Cargo Value</th><th class="num">Freight</th><th class="num">Duty</th><th class="num">Other</th><th class="num">Total Landed</th><th class="num">Per Unit</th><th class="num">Cost Uplift</th></tr></thead><tbody>` +
+    board.map(s => { const lc = SCM.landedCost(s); return `<tr><td><b>${esc(s.id)}</b> <span style="color:var(--text-3);font-size:11px">(${esc(s.ref)})</span></td>
+      <td class="num">${usd(lc.cargoValue)}</td><td class="num">${usd(lc.freight)}</td><td class="num">${usd(lc.duty)}</td>
+      <td class="num">${usd(lc.other)}</td><td class="num"><b>${usd(lc.totalLanded)}</b></td>
+      <td class="num">$${lc.perUnit}</td><td class="num">${lc.markupPct === null ? '—' : '+' + lc.markupPct + '%'}</td></tr>`; }).join('') + '</tbody></table>';
+}
+
+// ── Risks ──
+function renderRisks() {
+  if (!hasData()) { $('riskList').innerHTML = EMPTY_HINT; return; }
+  const risks = SCM.detectRisks(data);
+  $('riskList').innerHTML = risks.length
+    ? risks.map(r => `<div class="risk-item">${sevBadge(r.severity)}<div><b>${esc(r.title)} <span style="color:var(--text-3);font-weight:400;font-size:11px">· ${esc(r.category)}</span></b><p>${esc(r.detail)}</p></div></div>`).join('')
+    : '<p style="color:var(--text-3)">No risks detected. ✅</p>';
+}
+
+// ── Data Center ──
+const DATASETS = [
+  { key: 'products',       label: 'Products',        meta: 'SKUs, costs, lead times' },
+  { key: 'sales',          label: 'Sales History',   meta: 'export orders by month' },
+  { key: 'inventory',      label: 'Inventory',       meta: 'stock on hand by warehouse' },
+  { key: 'suppliers',      label: 'Suppliers',       meta: 'approved vendor database' },
+  { key: 'purchaseOrders', label: 'Purchase Orders', meta: 'PO history & open orders' },
+  { key: 'shipments',      label: 'Shipments',       meta: 'inbound & outbound freight' },
+  { key: 'budget',         label: 'Budget',          meta: 'monthly budget vs actual' },
+];
+
+function renderDataCenter() {
+  $('datasetGrid').innerHTML = DATASETS.map(d => `
+    <div class="dataset-tile"><b>${d.label}</b>
+      <div class="cnt">${fmt(data[d.key]?.length || 0)}</div>
+      <div class="meta">${d.meta}</div>
+      <label class="btn sm ghost" style="cursor:pointer">Upload CSV<input type="file" accept=".csv" hidden data-dataset="${d.key}"></label>
+    </div>`).join('');
+
+  $('datasetGrid').querySelectorAll('input[type=file]').forEach(inp => {
+    inp.addEventListener('change', async () => {
+      const file = inp.files[0]; if (!file) return;
+      const rows = SCM.parseCSV(await file.text());
+      if (!rows.length) { toast('Could not parse any rows from that CSV.'); return; }
+      data[inp.dataset.dataset] = rows;
+      SCM.saveData(data);
+      renderAll();
+      toast(`${rows.length} rows loaded into ${inp.dataset.dataset}.`);
+    });
+  });
+}
+
+$('loadSampleBtn').addEventListener('click', () => {
+  data = buildSampleData();
+  SCM.saveData(data);
+  renderAll();
+  toast('KAFI sample dataset loaded — explore the dashboard.');
+});
+$('clearDataBtn').addEventListener('click', () => {
+  if (!confirm('Clear all supply chain data from this browser?')) return;
+  SCM.clearData(); data = SCM.loadData(); renderAll();
+  toast('All data cleared.');
+});
+
+// ═════════ Charts (dependency-free canvas line chart) ═════════
+function drawChart(canvas, cfg) {
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  const W = rect.width || 600, H = rect.height || 260;
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, W, H);
+  if (!cfg || !cfg.labels?.length) {
+    ctx.fillStyle = '#6a6a5e'; ctx.font = '13px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('No data to chart', W / 2, H / 2);
+    return;
+  }
+  const pad = { l: 56, r: 16, t: 16, b: 34 };
+  const all = cfg.series.flatMap(s => s.values).filter(v => v !== null && v !== undefined);
+  const max = Math.max(...all, 1) * 1.12;
+  const x = i => pad.l + (W - pad.l - pad.r) * (cfg.labels.length === 1 ? 0.5 : i / (cfg.labels.length - 1));
+  const y = v => H - pad.b - (H - pad.t - pad.b) * (v / max);
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.fillStyle = '#6a6a5e'; ctx.font = '11px Segoe UI';
+  for (let g = 0; g <= 4; g++) {
+    const v = max * g / 4, yy = y(v);
+    ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(W - pad.r, yy); ctx.stroke();
+    ctx.textAlign = 'right'; ctx.fillText(Math.round(v).toLocaleString(), pad.l - 8, yy + 4);
+  }
+  ctx.textAlign = 'center';
+  const step = Math.ceil(cfg.labels.length / 9);
+  cfg.labels.forEach((lb, i) => { if (i % step === 0) ctx.fillText(lb.slice(2), x(i), H - 12); });
+
+  for (const s of cfg.series) {
+    ctx.strokeStyle = s.color; ctx.lineWidth = 2;
+    ctx.setLineDash(s.dashed ? [6, 5] : []);
+    ctx.beginPath();
+    let started = false;
+    s.values.forEach((v, i) => {
+      if (v === null || v === undefined) { return; }
+      if (!started) { ctx.moveTo(x(i), y(v)); started = true; } else ctx.lineTo(x(i), y(v));
+    });
+    ctx.stroke(); ctx.setLineDash([]);
+    s.values.forEach((v, i) => {
+      if (v === null || v === undefined) return;
+      ctx.fillStyle = s.color; ctx.beginPath(); ctx.arc(x(i), y(v), 3, 0, Math.PI * 2); ctx.fill();
+    });
+  }
+  // legend
+  let lx = pad.l;
+  for (const s of cfg.series) {
+    ctx.fillStyle = s.color; ctx.fillRect(lx, 4, 10, 10);
+    ctx.fillStyle = '#a0a090'; ctx.textAlign = 'left'; ctx.font = '11.5px Segoe UI';
+    ctx.fillText(s.name, lx + 14, 13);
+    lx += 14 + ctx.measureText(s.name).width + 18;
+  }
+}
+
+// ═════════ AI Copilot ═════════
+const chatHistory = [];
+const SUGGESTIONS = [
+  'Which items must we order this week, and why?',
+  'Summarize our top supply chain risks for management',
+  'Draft a follow-up email to Everfresh about the late custard PO',
+  'How should we prepare inventory for Ramadan season?',
+  'Which supplier is underperforming and what should we do?',
+];
+
+function renderSuggestions() {
+  $('copilotSuggestions').innerHTML = SUGGESTIONS.map(s => `<button class="suggestion-chip">${esc(s)}</button>`).join('');
+  $('copilotSuggestions').querySelectorAll('button').forEach(b => b.addEventListener('click', () => { $('copilotInput').value = b.textContent; sendCopilot(); }));
+}
+
+function appendMsg(cls, html) {
+  const div = document.createElement('div');
+  div.className = 'msg ' + cls;
+  div.innerHTML = html;
+  $('copilotMessages').appendChild(div);
+  $('copilotMessages').scrollTop = $('copilotMessages').scrollHeight;
+  return div;
+}
+
+async function sendCopilot() {
+  const text = $('copilotInput').value.trim();
+  if (!text) return;
+  $('copilotInput').value = '';
+  appendMsg('user', esc(text));
+  chatHistory.push({ role: 'user', content: text });
+
+  const typing = appendMsg('bot', '<span class="typing"><i></i><i></i><i></i></span>');
+  $('copilotSend').disabled = true;
+
+  try {
+    const system = SCM.AI_SYSTEM_PROMPT + (hasData() ? '\n\n' + SCM.buildAIContext(data) : '\n\n(No datasets loaded yet — tell the user to load data in the Data Center.)');
+    const resp = await fetch('/api/ai/chat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: chatHistory.slice(-12), system, maxTokens: 2048 }),
+    });
+    const out = await resp.json();
+    typing.remove();
+    if (out.text) {
+      chatHistory.push({ role: 'assistant', content: out.text });
+      appendMsg('bot', esc(out.text) + `<span class="meta">answered by ${esc(out.provider)} · ${esc(out.model)}</span>`);
+    } else {
+      const details = (out.attempts || []).map(a => `• ${a.provider}: ${a.error}`).join('\n');
+      appendMsg('err', esc(out.error || 'AI request failed.') + (details ? '\n' + esc(details) : ''));
+    }
+  } catch (e) {
+    typing.remove();
+    appendMsg('err', 'Could not reach the local server. Is server.py running?');
+  }
+  $('copilotSend').disabled = false;
+}
+$('copilotSend').addEventListener('click', sendCopilot);
+$('copilotInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendCopilot(); } });
+
+// ═════════ Settings (admin only) ═════════
+const PROVIDER_OPTIONS = [
+  ['anthropic', 'Anthropic (Claude)'], ['openai', 'OpenAI (GPT)'], ['gemini', 'Google Gemini'],
+  ['openrouter', 'OpenRouter'], ['meta', 'Meta (Llama API)'], ['deepseek', 'DeepSeek'],
+  ['manus', 'Manus (custom URL)'], ['cursor', 'Cursor (custom URL)'], ['custom', 'Custom endpoint'],
+];
+let providerDefaults = {};
+
+function adminHeaders() {
+  return { 'Content-Type': 'application/json', 'X-Admin-Password': SETTINGS_PW };
+}
+
+function providerRow(p = {}) {
+  const row = document.createElement('div');
+  row.className = 'provider-row';
+  row.innerHTML = `
+    <select class="scm-select p-provider">${PROVIDER_OPTIONS.map(([v, l]) => `<option value="${v}" ${p.provider === v ? 'selected' : ''}>${l}</option>`).join('')}</select>
+    <input class="scm-input p-key" type="password" placeholder="API key" value="${esc(p.apiKeyMasked || '')}" autocomplete="off">
+    <input class="scm-input p-model" placeholder="model (blank = default)" value="${esc(p.model || '')}">
+    <input class="scm-input p-baseurl" placeholder="base URL (custom/Manus/Cursor)" value="${esc(p.baseUrl || '')}">
+    <button class="btn sm danger p-del" title="Remove">✕</button>`;
+  row.querySelector('.p-del').addEventListener('click', () => row.remove());
+  row.querySelector('.p-provider').addEventListener('change', e => {
+    const d = providerDefaults[e.target.value];
+    if (d) {
+      row.querySelector('.p-model').placeholder = d.model ? `default: ${d.model}` : 'model name required';
+      row.querySelector('.p-baseurl').placeholder = d.baseUrl || 'base URL required (OpenAI-compatible)';
+    }
+  });
+  return row;
+}
+
+async function loadProviderConfig() {
+  try {
+    const resp = await fetch('/api/ai/config', { headers: adminHeaders() });
+    if (!resp.ok) throw new Error('unauthorized');
+    const cfg = await resp.json();
+    providerDefaults = cfg.defaults || {};
+    $('providerRows').innerHTML = '';
+    (cfg.providers.length ? cfg.providers : [{}]).forEach(p => $('providerRows').appendChild(providerRow(p)));
+  } catch {
+    $('providerRows').innerHTML = '<p style="color:var(--red);font-size:13px">Could not load config from the local server.</p>';
+  }
+}
+
+$('addProviderBtn').addEventListener('click', () => $('providerRows').appendChild(providerRow()));
+
+$('saveProvidersBtn').addEventListener('click', async () => {
+  const providers = [...$('providerRows').querySelectorAll('.provider-row')].map(row => ({
+    provider: row.querySelector('.p-provider').value,
+    apiKey: row.querySelector('.p-key').value.trim(),
+    model: row.querySelector('.p-model').value.trim(),
+    baseUrl: row.querySelector('.p-baseurl').value.trim(),
+  })).filter(p => p.apiKey);
+  const resp = await fetch('/api/ai/config', { method: 'POST', headers: adminHeaders(), body: JSON.stringify({ providers }) });
+  const out = await resp.json();
+  if (out.ok) { toast(`Saved ${out.count} provider(s).`); loadProviderConfig(); }
+  else toast('Save failed: ' + (out.error || 'unknown error'));
+});
+
+$('testProvidersBtn').addEventListener('click', async () => {
+  const el = $('testResult');
+  el.className = 'test-result'; el.textContent = 'Testing provider chain…';
+  try {
+    const resp = await fetch('/api/ai/test', { method: 'POST', headers: adminHeaders(), body: '{}' });
+    const out = await resp.json();
+    if (out.text) { el.className = 'test-result ok'; el.textContent = `✅ Connected via ${out.provider} (${out.model}): "${out.text.trim()}"`; }
+    else {
+      el.className = 'test-result fail';
+      el.textContent = '❌ ' + (out.error || 'failed') + '\n' + (out.attempts || []).map(a => `• ${a.provider}: ${a.error}`).join('\n');
+    }
+  } catch { el.className = 'test-result fail'; el.textContent = '❌ Could not reach the local server.'; }
+});
+
+// ═════════ Boot ═════════
+renderSuggestions();
+renderAll();
+if (!hasData()) {
+  appendMsg('bot', 'Assalam-o-Alaikum! I am the KAFI Supply Chain AI Agent. Load the sample dataset (Data Center → Load KAFI sample data) or upload your ERP exports, then ask me anything about demand, stock, suppliers, shipments or costs.');
+} else {
+  appendMsg('bot', 'Welcome back. Your supply chain data is loaded — ask me anything, or pick a suggestion above.');
+}
+if (sessionStorage.getItem(ADMIN_KEY) === 'true') loadProviderConfig();
+window.addEventListener('resize', () => { renderDashboard(); drawForecastChart(); });
+
+console.log('%c[KAFI] Supply Chain AI Agent initialized', 'color:#c5992e;font-weight:bold');
+</script>
+</body>
+</html>

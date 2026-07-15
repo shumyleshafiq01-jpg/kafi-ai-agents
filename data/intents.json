@@ -1,0 +1,301 @@
+{
+  "intents": {
+    "greeting": {
+      "patterns": [
+        "hi", "hello", "hey", "good morning", "good afternoon", "good evening",
+        "howdy", "greetings", "whats up", "hiya", "yo",
+        "assalam", "salam", "aoa", "kia haal", "kya haal", "kaise ho",
+        "salam alaikum", "assalamualaikum"
+      ],
+      "weight": 1.0,
+      "responses": {
+        "en": [
+          "Welcome to Kafi Group! 👋 I'm here to help you explore our premium food products. What would you like to know about?",
+          "Hello! Welcome to Kafi Group — sourcing excellence since 1982. How can I assist you today?",
+          "Hi there! I'm the KAFI Assistant. Feel free to ask me about our rice, Himalayan pink salt, spices, or any other products!"
+        ],
+        "ur": [
+          "Kafi Group mein khush aamdeed! 👋 Main aapki madad ke liye haazir hoon. Aap kia janna chahenge?",
+          "Assalam o Alaikum! Kafi Group mein aapka khair-maqdam hai. Main aapki kaise madad kar sakta hoon?",
+          "Salam! Main KAFI Assistant hoon. Hamare chawal, namak, masale ya kisi bhi product ke baare mein poochein!"
+        ]
+      }
+    },
+
+    "product_list": {
+      "patterns": [
+        "list products", "all products", "show products", "what products",
+        "what do you sell", "what do you have", "show me everything",
+        "categories", "product range", "product line", "your products",
+        "kia kia hai", "products dikhao", "kya kya hai", "sab dikhao",
+        "items", "things you sell"
+      ],
+      "weight": 0.9,
+      "responses": {
+        "en": [
+          "We offer products across 8 categories:\n\n🌾 Basmati & Non-Basmati Rice\n🧂 Himalayan Pink Salt\n🍜 Vermicelli, Pheni & Kunafa Dough\n🫙 Condiments\n🌶️ Authentic Spices & Blends\n🍮 Desserts\n🧃 Juices & Natural Extracts\n🥜 Snacks & Wellness\n\nWhich category would you like to explore?"
+        ],
+        "ur": [
+          "Hamare 8 categories mein products hain:\n\n🌾 Basmati aur Non-Basmati Chawal\n🧂 Himalayan Pink Salt\n🍜 Seviyan, Pheni aur Kunafa\n🫙 Condiments\n🌶️ Masale aur Blends\n🍮 Desserts\n🧃 Juices aur Extracts\n🥜 Snacks aur Wellness\n\nKaunsi category dekhna chahenge?"
+        ]
+      }
+    },
+
+    "product_detail": {
+      "patterns": [
+        "tell me about", "details", "describe", "information", "info",
+        "what is", "explain", "more about", "details about",
+        "tafseelat", "batao", "kya hai", "ke baare mein"
+      ],
+      "weight": 0.85
+    },
+
+    "product_category": {
+      "patterns": [
+        "rice", "chawal", "basmati", "sella", "parboiled",
+        "salt", "namak", "pink salt", "himalayan", "sea salt",
+        "vermicelli", "seviyan", "pheni", "kunafa",
+        "condiments", "paste", "pickle", "achar", "chutney",
+        "spices", "masala", "masale", "blend",
+        "desserts", "dessert", "custard", "jelly", "kheer", "mithai",
+        "juices", "juice", "extract",
+        "snacks", "papri", "moringa", "honey", "shahad", "sesame"
+      ],
+      "weight": 0.9
+    },
+
+    "packaging_info": {
+      "patterns": [
+        "packaging", "package", "pack", "carton", "box",
+        "how packed", "packing", "container", "bottle", "jar",
+        "pouch", "bag", "how many in carton", "units per carton",
+        "packing kaise", "dabba", "packaging info"
+      ],
+      "weight": 0.85
+    },
+
+    "weight_inquiry": {
+      "patterns": [
+        "weight", "how heavy", "grams", "kilograms", "kg",
+        "size", "sizes", "available sizes", "how much weight",
+        "kitna", "wajan", "kitne gram", "kitne kg",
+        "500g", "1kg", "2kg", "5kg", "10kg", "25kg", "50kg",
+        "available in"
+      ],
+      "weight": 0.85
+    },
+
+    "price_inquiry": {
+      "patterns": [
+        "price", "cost", "how much", "rate", "pricing", "rates",
+        "charges", "fees", "quote", "quotation", "expensive",
+        "cheap", "affordable", "budget",
+        "kitne ka", "kya rate", "qeemat", "price kya hai", "mehnga"
+      ],
+      "weight": 0.9
+    },
+
+    "order_help": {
+      "patterns": [
+        "order", "buy", "purchase", "how to order", "place order",
+        "ordering process", "want to buy", "checkout", "cart",
+        "kharidna", "lena hai", "order karna", "kaise kharidein",
+        "how do i get", "can i buy"
+      ],
+      "weight": 0.9
+    },
+
+    "shipping_info": {
+      "patterns": [
+        "ship", "shipping", "deliver", "delivery", "export",
+        "country", "countries", "where", "international",
+        "do you ship", "can you send", "send to",
+        "kahan", "bhejte", "export karte", "mulk"
+      ],
+      "weight": 0.85
+    },
+
+    "contact_request": {
+      "patterns": [
+        "contact", "call", "phone", "email", "talk",
+        "human", "agent", "representative", "speak",
+        "call me", "reach out", "get in touch",
+        "baat karni", "rabta", "phone number", "email address",
+        "talk to someone", "real person", "manager"
+      ],
+      "weight": 0.9
+    },
+
+    "whatsapp_request": {
+      "patterns": [
+        "whatsapp", "whats app", "wa", "message on whatsapp",
+        "chat on whatsapp", "whatsapp number", "send whatsapp",
+        "whatsapp par", "whatsapp pe"
+      ],
+      "weight": 0.95
+    },
+
+    "lead_capture": {
+      "patterns": [
+        "interested", "want to buy", "send quote", "quotation",
+        "proposal", "inquiry", "enquiry", "bulk order",
+        "business", "partnership", "distribute", "distributor",
+        "dil chaspi", "lena chahta", "business karna"
+      ],
+      "weight": 0.9
+    },
+
+    "language_switch": {
+      "patterns": [
+        "urdu", "hindi", "english", "language", "speak urdu",
+        "urdu mein", "angrezi", "change language"
+      ],
+      "weight": 0.8
+    },
+
+    "bot_identity": {
+      "patterns": [
+        "who are you", "your name", "are you a bot", "chatbot",
+        "robot", "are you human", "are you real", "are you ai",
+        "what are you", "tum kaun ho", "ap kaun", "naam kya hai"
+      ],
+      "weight": 0.9,
+      "responses": {
+        "en": [
+          "I'm the KAFI Assistant — an AI-powered product guide for Kafi Group. I can help you explore our products, answer questions, and connect you with our team. How can I help?",
+          "I'm an intelligent assistant built for Kafi Group to help you find the right products and information. What would you like to know?"
+        ],
+        "ur": [
+          "Main KAFI Assistant hoon — Kafi Group ka AI product guide. Main aapko hamare products ke baare mein bata sakta hoon aur hamari team se connect kar sakta hoon.",
+          "Main Kafi Group ka zehan-daar assistant hoon jo aapki madad ke liye banaya gaya hai. Kaise madad karun?"
+        ]
+      }
+    },
+
+    "smalltalk": {
+      "patterns": [
+        "married", "age", "how old", "boyfriend", "girlfriend",
+        "love", "date", "personal", "feelings", "favorite",
+        "hobby", "like", "dislike"
+      ],
+      "weight": 0.7,
+      "responses": {
+        "en": [
+          "I appreciate the friendly chat! 😊 I'm best at helping with Kafi Group products and services though. Can I help you with something from our product range?",
+          "Great question, but I'm focused on being your best product assistant! Would you like to explore our rice, salt, or other premium products?"
+        ],
+        "ur": [
+          "Aapki dosti ki qadar karta hoon! 😊 Lekin main Kafi Group ke products aur services mein behtar madad kar sakta hoon. Koi product dekhna chahenge?",
+          "Shukriya! Lekin mera kaam Kafi Group ke products mein madad karna hai. Chawal, namak ya koi aur product dekhein?"
+        ]
+      }
+    },
+
+    "farewell": {
+      "patterns": [
+        "bye", "goodbye", "see you", "take care", "later",
+        "thanks", "thank you", "that's all", "done", "exit",
+        "shukriya", "alvida", "khuda hafiz", "allah hafiz",
+        "bas itna", "hogaya"
+      ],
+      "weight": 0.9,
+      "responses": {
+        "en": [
+          "Thank you for visiting Kafi Group! 🙏 If you need anything else, feel free to come back anytime. Have a great day!",
+          "Thanks for chatting with us! Don't hesitate to reach out whenever you need assistance. Take care! 👋",
+          "It was great helping you! Remember, you can also reach us at exports@kafi-group.com or WhatsApp +92-300-8206633. Goodbye! 🌟"
+        ],
+        "ur": [
+          "Kafi Group mein aane ka shukriya! 🙏 Agar kuch aur chahiye to kabhi bhi aa jayein. Aapka din acha guzre!",
+          "Baat kar ke khushi hui! Jab bhi zaroorat ho, hamare WhatsApp +92-300-8206633 par rabta karein. Khuda Hafiz! 👋"
+        ]
+      }
+    },
+
+    "affirmative": {
+      "patterns": [
+        "yes", "yeah", "yep", "sure", "ok", "okay", "alright",
+        "absolutely", "definitely", "of course", "please", "go ahead",
+        "haan", "ji", "bilkul", "zaroor", "theek hai", "acha"
+      ],
+      "weight": 0.6
+    },
+
+    "negative": {
+      "patterns": [
+        "no", "nah", "nope", "not really", "not interested",
+        "no thanks", "pass", "skip", "cancel",
+        "nahi", "nahi chahiye", "rehne do", "mat"
+      ],
+      "weight": 0.6,
+      "responses": {
+        "en": [
+          "No problem! Is there anything else I can help you with?",
+          "Alright! Feel free to ask about anything else — products, shipping, or ordering."
+        ],
+        "ur": [
+          "Koi baat nahi! Kya kuch aur madad kar sakta hoon?",
+          "Theek hai! Koi aur sawal ho to zaroor poochein."
+        ]
+      }
+    },
+
+    "complaint": {
+      "patterns": [
+        "problem", "issue", "wrong", "bad", "not working",
+        "complaint", "error", "broken", "disappointed", "unhappy",
+        "masla", "mushkil", "kharab", "ghalat"
+      ],
+      "weight": 0.9,
+      "responses": {
+        "en": [
+          "I'm sorry to hear you're facing an issue. Let me connect you with our team right away. You can reach us at:\n\n📧 info@kafi-group.com\n📞 +92-300-8206633\n💬 WhatsApp: +92-300-8206633\n\nWe'll resolve this as quickly as possible."
+        ],
+        "ur": [
+          "Mujhe afsos hai ke aapko mushkil ho rahi hai. Abhi hamari team se rabta karein:\n\n📧 info@kafi-group.com\n📞 +92-300-8206633\n💬 WhatsApp: +92-300-8206633\n\nHum jaldi se jaldi hal karenge."
+        ]
+      }
+    },
+
+    "upsell_trigger": {
+      "patterns": [
+        "anything else", "more", "other", "what else",
+        "show me more", "more products", "other options",
+        "aur kuch", "aur dikhao", "mazeed"
+      ],
+      "weight": 0.7
+    },
+
+    "catalogue_request": {
+      "patterns": [
+        "catalogue", "catalog", "brochure", "pdf", "download",
+        "company profile", "product list pdf"
+      ],
+      "weight": 0.85,
+      "responses": {
+        "en": [
+          "You can view our complete product catalogue here:\n📖 Product Catalogue: https://online.fliphtml5.com/Kafi-Essence/zfua/#p=1\n📄 Company Profile: https://kafi-group.com/kafi-commodites-profile.pdf\n\nWould you like to know about any specific products?"
+        ],
+        "ur": [
+          "Hamara complete product catalogue yahaan dekhein:\n📖 Product Catalogue: https://online.fliphtml5.com/Kafi-Essence/zfua/#p=1\n📄 Company Profile: https://kafi-group.com/kafi-commodites-profile.pdf\n\nKoi specific product ke baare mein janna chahenge?"
+        ]
+      }
+    }
+  },
+
+  "fallback": {
+    "responses": {
+      "en": [
+        "I'm not sure I understood that. Could you rephrase? You can ask me about:\n\n🌾 Our products (rice, salt, spices, desserts...)\n📦 Packaging and weights\n🚢 Shipping and exports\n📞 Contacting our team\n\nOr just say 'products' to see everything!",
+        "Hmm, I didn't quite catch that. Try asking about our product categories, packaging details, or how to place an order!",
+        "I want to make sure I help you right! Could you try rephrasing your question? I'm great with product info, ordering, and shipping queries."
+      ],
+      "ur": [
+        "Mujhe samajh nahi aaya. Kya aap dobaara phrasing kar sakte hain? Aap mujhse ye pooch sakte hain:\n\n🌾 Hamare products (chawal, namak, masale...)\n📦 Packaging aur weight\n🚢 Shipping aur export\n📞 Hamari team se rabta\n\nYa bas 'products' likhein!",
+        "Thori mushkil hui samajhne mein. Hamare products, packaging, ya ordering ke baare mein poochein!"
+      ]
+    }
+  },
+
+  "customTraining": []
+}
